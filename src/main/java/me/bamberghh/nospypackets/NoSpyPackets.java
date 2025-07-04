@@ -1,6 +1,7 @@
 package me.bamberghh.nospypackets;
 
 import io.wispforest.owo.config.ui.ConfigScreenProviders;
+import me.bamberghh.nospypackets.config.NoSpyPacketsConfigModel;
 import me.bamberghh.nospypackets.config.NoSpyPacketsConfigScreen;
 import net.fabricmc.api.ClientModInitializer;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class NoSpyPackets implements ClientModInitializer {
@@ -20,7 +22,8 @@ public class NoSpyPackets implements ClientModInitializer {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	public static final me.bamberghh.nospypackets.config.NoSpyPacketsConfig CONFIG = me.bamberghh.nospypackets.config.NoSpyPacketsConfig.createAndLoad();
+	public static final me.bamberghh.nospypackets.config.NoSpyPacketsConfig CONFIG
+			= me.bamberghh.nospypackets.config.NoSpyPacketsConfig.createAndLoad(NoSpyPacketsConfigModel::builderConsumer);
 
 	private static Set<String> suppressedListToSet(List<String> list) {
 		return list

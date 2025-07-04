@@ -1,10 +1,12 @@
 package me.bamberghh.nospypackets.config;
 
 import io.wispforest.owo.config.ConfigWrapper;
+import io.wispforest.owo.config.Option;
 import io.wispforest.owo.config.ui.ConfigScreen;
 import io.wispforest.owo.config.ui.OptionComponentFactory;
 import io.wispforest.owo.config.ui.component.ListOptionContainer;
 import me.bamberghh.nospypackets.NoSpyPackets;
+import me.bamberghh.nospypackets.util.StringMask;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +18,11 @@ public class NoSpyPacketsConfigScreen extends ConfigScreen {
         super(modelId, config, parent);
         extraFactories.put(option -> option.clazz() == Set.class, (model, option) -> {
             var layout = new SetOptionContainer(option);
-            return new OptionComponentFactory.Result(layout, layout);
+            return new OptionComponentFactory.Result<>(layout, layout);
+        });
+        extraFactories.put(option -> option.clazz() == StringMask.class, (model, option) -> {
+            var layout = new StringMaskContainer(model, (Option<StringMask>) (Object) option);
+            return new OptionComponentFactory.Result<>(layout, layout);
         });
     }
 

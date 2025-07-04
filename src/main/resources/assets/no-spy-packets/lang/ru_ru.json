@@ -53,6 +53,11 @@
     " Выключено"
   ],
 
+  "text.config.no-spy-packets-config.stringmask.kind.whitelist": "Белый список",
+  "text.config.no-spy-packets-config.stringmask.kind.blacklist": "Черный список",
+  "text.config.no-spy-packets-config.stringmask.kind.regex": "Регулярное выражение",
+  "text.config.no-spy-packets-config.stringmask.list": "Список",
+
   "text.config.no-spy-packets-config.title": "Настройка No Spy Packets",
 
   "text.config.no-spy-packets-config.option.shouldOverwriteBrand": "Переписывать бренд (brand)",

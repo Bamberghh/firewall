@@ -193,8 +193,12 @@ public class SetOptionContainer<T> extends CollapsibleContainer implements Optio
         return true;
     }
 
+    public IndexHashSet<T> value() {
+        return backingSet();
+    }
+
     @Override
     public Object parsedValue() {
-        return backingSet();
+        return value();
     }
 }

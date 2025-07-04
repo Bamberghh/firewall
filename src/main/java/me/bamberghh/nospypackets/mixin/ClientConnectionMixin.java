@@ -1,11 +1,13 @@
 package me.bamberghh.nospypackets.mixin;
 
 import me.bamberghh.nospypackets.NoSpyPackets;
+import me.bamberghh.nospypackets.util.StringMask;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,12 +21,13 @@ public class ClientConnectionMixin {
 		if (!(packet instanceof CustomPayloadC2SPacket(CustomPayload payload))) {
 			return;
 		}
-		if (NoSpyPackets.CONFIG.suppressedSentCustomPayloadIdentifiers().isEmpty()) {
+		StringMask idMask = NoSpyPackets.CONFIG.sentCustomPayloadIdentifiers();
+		if (idMask.acceptsEverything()) {
 			return;
 		}
-		String payloadIdString = payload.getId().id().toString();
-		if (NoSpyPackets.CONFIG.suppressedSentCustomPayloadIdentifiers().contains(payloadIdString)) {
-			NoSpyPackets.LOGGER.info("no-spy-packets: suppressed sent packet {}", payloadIdString);
+		Identifier payloadId = payload.getId().id();
+		if (idMask.acceptsNothing() || idMask.accepts(payloadId.toString())) {
+			NoSpyPackets.LOGGER.info("no-spy-packets: suppressed sent packet {}", payloadId);
 			info.cancel();
 		}
 	}
