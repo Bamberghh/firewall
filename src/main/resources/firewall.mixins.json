@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "me.bamberghh.nospypackets.mixin",
+	"package": "me.bamberghh.firewall.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
 		"BrandCustomPayloadMixin",

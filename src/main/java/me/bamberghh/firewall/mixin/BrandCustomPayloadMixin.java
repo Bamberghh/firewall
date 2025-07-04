@@ -1,6 +1,6 @@
-package me.bamberghh.nospypackets.mixin;
+package me.bamberghh.firewall.mixin;
 
-import me.bamberghh.nospypackets.NoSpyPackets;
+import me.bamberghh.firewall.Firewall;
 import net.minecraft.network.packet.BrandCustomPayload;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,8 +17,8 @@ public class BrandCustomPayloadMixin {
 
 	@Inject(at = @At("RETURN"), method = "<init>(Ljava/lang/String;)V")
 	private void init(String string, CallbackInfo ci) {
-		if (NoSpyPackets.CONFIG.shouldOverwriteBrand()) {
-			this.brand = NoSpyPackets.CONFIG.brandOverwriteValue();
+		if (Firewall.CONFIG.shouldOverwriteBrand()) {
+			this.brand = Firewall.CONFIG.brandOverwriteValue();
 		}
 	}
 }

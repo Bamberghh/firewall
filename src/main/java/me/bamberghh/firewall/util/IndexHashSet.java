@@ -1,4 +1,4 @@
-package me.bamberghh.nospypackets.util;
+package me.bamberghh.firewall.util;
 
 import org.jetbrains.annotations.NotNull;
 

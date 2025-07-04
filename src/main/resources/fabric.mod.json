@@ -1,9 +1,9 @@
 {
 	"schemaVersion": 1,
-	"id": "no-spy-packets",
+	"id": "firewall",
 	"version": "${version}",
-	"name": "No Spy Packets",
-	"description": "Removes other mods' client to server spy packets",
+	"name": "Firewall",
+	"description": "Filters sent/received packets",
 	"authors": [
 		"Bamberghh"
 	],
@@ -12,15 +12,15 @@
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/no-spy-packets/icon.png",
+	"icon": "assets/firewall/icon.png",
 	"environment": "client",
 	"entrypoints": {
 		"client": [
-			"me.bamberghh.nospypackets.NoSpyPackets"
+			"me.bamberghh.firewall.Firewall"
 		]
 	},
 	"mixins": [
-		"no-spy-packets.mixins.json"
+		"firewall.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.16.14",

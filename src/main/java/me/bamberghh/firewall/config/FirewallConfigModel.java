@@ -1,20 +1,15 @@
-package me.bamberghh.nospypackets.config;
+package me.bamberghh.firewall.config;
 
-import blue.endless.jankson.JsonPrimitive;
 import io.wispforest.endec.Endec;
 import io.wispforest.owo.config.ConfigWrapper;
 import io.wispforest.owo.config.annotation.*;
-import io.wispforest.owo.ui.core.Color;
-import me.bamberghh.nospypackets.util.IndexHashSet;
-import me.bamberghh.nospypackets.util.StringMask;
-import net.minecraft.util.Identifier;
+import me.bamberghh.firewall.util.StringMask;
 
-import java.util.*;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("unused")
-@Config(name = "no-spy-packets-config", wrapperName = "NoSpyPacketsConfig", defaultHook = true)
-public class NoSpyPacketsConfigModel {
+@Config(name = "firewall-config", wrapperName = "FirewallConfig", defaultHook = true)
+public class FirewallConfigModel {
     public StringMask sentCustomPayloadIdentifiers = new StringMask();
     public StringMask receivedCustomPayloadIdentifiers = new StringMask();
 

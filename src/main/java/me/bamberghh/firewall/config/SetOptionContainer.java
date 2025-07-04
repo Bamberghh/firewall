@@ -1,4 +1,4 @@
-package me.bamberghh.nospypackets.config;
+package me.bamberghh.firewall.config;
 
 import io.wispforest.owo.config.Option;
 import io.wispforest.owo.config.annotation.Expanded;
@@ -16,7 +16,7 @@ import io.wispforest.owo.ui.core.*;
 import io.wispforest.owo.ui.util.UISounds;
 import io.wispforest.owo.util.NumberReflection;
 import io.wispforest.owo.util.ReflectionUtils;
-import me.bamberghh.nospypackets.util.IndexHashSet;
+import me.bamberghh.firewall.util.IndexHashSet;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;

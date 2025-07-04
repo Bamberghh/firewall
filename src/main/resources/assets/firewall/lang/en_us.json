@@ -1,0 +1,18 @@
+{
+  "text.config.firewall-config.stringmask.kind.whitelist": "Whitelist",
+  "text.config.firewall-config.stringmask.kind.blacklist": "Blacklist",
+  "text.config.firewall-config.stringmask.kind.regex": "Regex",
+  "text.config.firewall-config.stringmask.list": "List",
+
+  "text.config.firewall-config.title": "Firewall configuration",
+
+  "text.config.firewall-config.option.shouldOverwriteBrand": "Should overwrite the brand",
+  "text.config.firewall-config.option.brandBehavior.tooltip": "The brand packet tells the server what client you're using, like 'vanilla', 'fabric', etc.",
+  "text.config.firewall-config.option.brandOverwriteValue": "Brand overwrite value",
+  "text.config.firewall-config.option.brandOverwriteValue.tooltip": "'vanilla', 'fabric' or anything else. Used only if the brand overwrite is enabled.",
+
+  "text.config.firewall-config.option.sentCustomPayloadIdentifiers": "Sent custom payload identifiers",
+  "text.config.firewall-config.option.sentCustomPayloadIdentifiers.tooltip": "Clients communicating with servers sometimes use custom payload packets, aka plugin channels.\nHere are some identifiers of packets that may be worth suppressing:\n\nminecraft:brand: The brand packet, used by Vanilla and modded Minecraft clients.\nminecraft:register: Tells the receiver the custom channels that the sender can accept.\nminecraft:unregister: Tells the receiver the custom channels that the sender doesn't accept.\nvisiblebarriers:mod_installed: The Visible Barriers mod sends this packet on a server join.",
+  "text.config.firewall-config.option.receivedCustomPayloadIdentifiers": "Received custom payload identifiers",
+  "text.config.firewall-config.option.receivedCustomPayloadIdentifiers.tooltip": "Clients communicating with servers sometimes use custom payload packets, aka plugin channels.\nHere are some identifiers of packets that may be worth suppressing:\n\nminecraft:brand: The brand packet, used by Vanilla and modded Minecraft clients.\nminecraft:register: Tells the receiver the custom channels that the sender can accept.\nminecraft:unregister: Tells the receiver the custom channels that the sender doesn't accept.\nvisiblebarriers:mod_installed: The Visible Barriers mod sends this packet on a server join."
+}

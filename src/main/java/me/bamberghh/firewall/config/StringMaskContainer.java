@@ -1,10 +1,8 @@
-package me.bamberghh.nospypackets.config;
+package me.bamberghh.firewall.config;
 
-import com.google.common.reflect.TypeToken;
 import io.wispforest.owo.config.Option;
 import io.wispforest.owo.config.annotation.Expanded;
 import io.wispforest.owo.config.ui.component.OptionValueProvider;
-import io.wispforest.owo.config.ui.component.SearchAnchorComponent;
 import io.wispforest.owo.ui.component.ButtonComponent;
 import io.wispforest.owo.ui.component.Components;
 import io.wispforest.owo.ui.component.LabelComponent;
@@ -14,11 +12,9 @@ import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.parsing.UIModel;
 import io.wispforest.owo.util.Observable;
-import me.bamberghh.nospypackets.NoSpyPackets;
-import me.bamberghh.nospypackets.util.IndexHashSet;
-import me.bamberghh.nospypackets.util.StringMask;
+import me.bamberghh.firewall.util.IndexHashSet;
+import me.bamberghh.firewall.util.StringMask;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -166,7 +162,7 @@ public class StringMaskContainer extends CollapsibleContainer implements OptionV
                 .children()
                 .getFirst()
                 .<LabelComponent>configure(
-                        label -> label.text(Text.translatable("text.config.no-spy-packets-config.stringmask.list")));
+                        label -> label.text(Text.translatable("text.config.firewall.stringmask.list")));
 
         regexTextBoxComponent = Components.textBox(Sizing.expand(), mask.regex.pattern());
 
