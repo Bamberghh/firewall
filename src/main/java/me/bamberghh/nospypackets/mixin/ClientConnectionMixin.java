@@ -1,11 +1,8 @@
 package me.bamberghh.nospypackets.mixin;
 
 import me.bamberghh.nospypackets.NoSpyPackets;
-import me.bamberghh.nospypackets.NoSpyPacketsConfigModel;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketCallbacks;
-import net.minecraft.network.packet.BrandCustomPayload;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
@@ -14,7 +11,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import xyz.amymialee.visiblebarriers.common.VisibleBarriersCommon;
 
 @Mixin(ClientConnection.class)
 public class ClientConnectionMixin {
@@ -23,11 +19,11 @@ public class ClientConnectionMixin {
 		if (!(packet instanceof CustomPayloadC2SPacket(CustomPayload payload))) {
 			return;
 		}
-		if (NoSpyPackets.CONFIG_suppressedSentCustomPayloadIdentifiersSet.isEmpty()) {
+		if (NoSpyPackets.CONFIG.suppressedSentCustomPayloadIdentifiers().isEmpty()) {
 			return;
 		}
 		String payloadIdString = payload.getId().id().toString();
-		if (NoSpyPackets.CONFIG_suppressedSentCustomPayloadIdentifiersSet.contains(payloadIdString)) {
+		if (NoSpyPackets.CONFIG.suppressedSentCustomPayloadIdentifiers().contains(payloadIdString)) {
 			NoSpyPackets.LOGGER.info("no-spy-packets: suppressed sent packet {}", payloadIdString);
 			info.cancel();
 		}

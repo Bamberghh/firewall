@@ -14,11 +14,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ClientCommonNetworkHandlerMixin {
     @Inject(method = "onCustomPayload(Lnet/minecraft/network/packet/s2c/common/CustomPayloadS2CPacket;)V", at = @At("HEAD"), cancellable = true)
     void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
-        if (NoSpyPackets.CONFIG_suppressedReceivedCustomPayloadIdentifiersSet.isEmpty()) {
+        if (NoSpyPackets.CONFIG.suppressedReceivedCustomPayloadIdentifiers().isEmpty()) {
             return;
         }
         String payloadIdString = packet.payload().getId().id().toString();
-        if (NoSpyPackets.CONFIG_suppressedReceivedCustomPayloadIdentifiersSet.contains(payloadIdString)) {
+        if (NoSpyPackets.CONFIG.suppressedReceivedCustomPayloadIdentifiers().contains(payloadIdString)) {
             NoSpyPackets.LOGGER.info("no-spy-packets: suppressed received packet {}", payloadIdString);
             ci.cancel();
         }

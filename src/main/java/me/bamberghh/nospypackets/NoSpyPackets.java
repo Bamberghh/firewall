@@ -1,5 +1,7 @@
 package me.bamberghh.nospypackets;
 
+import io.wispforest.owo.config.ui.ConfigScreenProviders;
+import me.bamberghh.nospypackets.config.NoSpyPacketsConfigScreen;
 import net.fabricmc.api.ClientModInitializer;
 
 import net.fabricmc.loader.api.FabricLoader;
@@ -18,9 +20,7 @@ public class NoSpyPackets implements ClientModInitializer {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	public static final me.bamberghh.nospypackets.NoSpyPacketsConfig CONFIG;
-	public static Set<String> CONFIG_suppressedSentCustomPayloadIdentifiersSet;
-	public static Set<String> CONFIG_suppressedReceivedCustomPayloadIdentifiersSet;
+	public static final me.bamberghh.nospypackets.config.NoSpyPacketsConfig CONFIG = me.bamberghh.nospypackets.config.NoSpyPacketsConfig.createAndLoad();
 
 	private static Set<String> suppressedListToSet(List<String> list) {
 		return list
@@ -29,19 +29,8 @@ public class NoSpyPackets implements ClientModInitializer {
 				.collect(Collectors.toSet());
 	}
 
-	static {
-		CONFIG = me.bamberghh.nospypackets.NoSpyPacketsConfig.createAndLoad();
-		CONFIG_suppressedSentCustomPayloadIdentifiersSet
-				= suppressedListToSet(CONFIG.suppressedSentCustomPayloadIdentifiers());
-		CONFIG.subscribeToSuppressedSentCustomPayloadIdentifiers(list ->
-				CONFIG_suppressedSentCustomPayloadIdentifiersSet = suppressedListToSet(list));
-		CONFIG_suppressedReceivedCustomPayloadIdentifiersSet
-				= suppressedListToSet(CONFIG.suppressedReceivedCustomPayloadIdentifiers());
-		CONFIG.subscribeToSuppressedReceivedCustomPayloadIdentifiers(list ->
-				CONFIG_suppressedReceivedCustomPayloadIdentifiersSet = suppressedListToSet(list));
-	}
-
 	@Override
 	public void onInitializeClient() {
+		ConfigScreenProviders.register("no-spy-packets", screen -> NoSpyPacketsConfigScreen.create(CONFIG, screen));
 	}
 }
