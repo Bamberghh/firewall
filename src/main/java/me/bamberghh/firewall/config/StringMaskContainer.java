@@ -141,6 +141,7 @@ public class StringMaskContainer extends CollapsibleContainer implements OptionV
         Field subValueObservableField;
         try {
             subValueObservableField = (new Object() {
+                @Expanded
                 Set<String> value;
             }).getClass().getDeclaredField("value");
         } catch (NoSuchFieldException e) {

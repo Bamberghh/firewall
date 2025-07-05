@@ -4,7 +4,6 @@ import io.wispforest.owo.config.ui.ConfigScreenProviders;
 import me.bamberghh.firewall.config.FirewallConfigModel;
 import me.bamberghh.firewall.config.FirewallConfigScreen;
 import net.fabricmc.api.ClientModInitializer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

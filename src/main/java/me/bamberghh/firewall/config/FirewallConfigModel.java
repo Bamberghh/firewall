@@ -2,7 +2,8 @@ package me.bamberghh.firewall.config;
 
 import io.wispforest.endec.Endec;
 import io.wispforest.owo.config.ConfigWrapper;
-import io.wispforest.owo.config.annotation.*;
+import io.wispforest.owo.config.annotation.Config;
+import io.wispforest.owo.config.annotation.Nest;
 import me.bamberghh.firewall.util.StringMask;
 
 import java.util.regex.Pattern;
@@ -11,6 +12,7 @@ import java.util.regex.Pattern;
 @Config(name = "firewall-config", wrapperName = "FirewallConfig", defaultHook = true)
 public class FirewallConfigModel {
     public static class SendRecvStringMask {
+        public StringMask comm = new StringMask();
         public StringMask send = new StringMask();
         public StringMask recv = new StringMask();
     }

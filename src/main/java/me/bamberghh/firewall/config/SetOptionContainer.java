@@ -22,7 +22,9 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 // Copied from io.wispforest.owo.config.ui.component.ListOptionContainer
