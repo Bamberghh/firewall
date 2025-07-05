@@ -6,13 +6,18 @@
 
   "text.config.firewall-config.title": "Firewall configuration",
 
+  "text.config.firewall-config.category.packetIdentifiers": "Packet identifiers",
+  "text.config.firewall-config.category.packetIdentifiers.tooltip": "Allowed packet resource identifiers - see https://minecraft.wiki/w/Java_Edition_protocol/Packets",
+  "text.config.firewall-config.option.packetIdentifiers.send": "Send",
+  "text.config.firewall-config.option.packetIdentifiers.recv": "Receive",
+
+  "text.config.firewall-config.category.customPayloadIdentifiers": "Custom payload identifiers",
+  "text.config.firewall-config.category.customPayloadIdentifiers.tooltip": "Clients communicating with servers sometimes use custom payload packets, aka plugin channels.\nHere are some identifiers of packets that may be worth suppressing:\n\nminecraft:brand: The brand packet, used by Vanilla and modded Minecraft clients.\nminecraft:register: Tells the receiver the custom channels that the sender can accept.\nminecraft:unregister: Tells the receiver the custom channels that the sender doesn't accept.\nvisiblebarriers:mod_installed: The Visible Barriers mod sends this packet on a server join.",
+  "text.config.firewall-config.option.customPayloadIdentifiers.send": "Send",
+  "text.config.firewall-config.option.customPayloadIdentifiers.recv": "Receive",
+
   "text.config.firewall-config.option.shouldOverwriteBrand": "Should overwrite the brand",
   "text.config.firewall-config.option.brandBehavior.tooltip": "The brand packet tells the server what client you're using, like 'vanilla', 'fabric', etc.",
   "text.config.firewall-config.option.brandOverwriteValue": "Brand overwrite value",
-  "text.config.firewall-config.option.brandOverwriteValue.tooltip": "'vanilla', 'fabric' or anything else. Used only if the brand overwrite is enabled.",
-
-  "text.config.firewall-config.option.sentCustomPayloadIdentifiers": "Sent custom payload identifiers",
-  "text.config.firewall-config.option.sentCustomPayloadIdentifiers.tooltip": "Clients communicating with servers sometimes use custom payload packets, aka plugin channels.\nHere are some identifiers of packets that may be worth suppressing:\n\nminecraft:brand: The brand packet, used by Vanilla and modded Minecraft clients.\nminecraft:register: Tells the receiver the custom channels that the sender can accept.\nminecraft:unregister: Tells the receiver the custom channels that the sender doesn't accept.\nvisiblebarriers:mod_installed: The Visible Barriers mod sends this packet on a server join.",
-  "text.config.firewall-config.option.receivedCustomPayloadIdentifiers": "Received custom payload identifiers",
-  "text.config.firewall-config.option.receivedCustomPayloadIdentifiers.tooltip": "Clients communicating with servers sometimes use custom payload packets, aka plugin channels.\nHere are some identifiers of packets that may be worth suppressing:\n\nminecraft:brand: The brand packet, used by Vanilla and modded Minecraft clients.\nminecraft:register: Tells the receiver the custom channels that the sender can accept.\nminecraft:unregister: Tells the receiver the custom channels that the sender doesn't accept.\nvisiblebarriers:mod_installed: The Visible Barriers mod sends this packet on a server join."
+  "text.config.firewall-config.option.brandOverwriteValue.tooltip": "'vanilla', 'fabric' or anything else. Used only if the brand overwrite is enabled."
 }

@@ -60,13 +60,18 @@
 
   "text.config.firewall-config.title": "Настройка Firewall",
 
+  "text.config.firewall-config.category.packetIdentifiers": "Идентификаторы пакетов",
+  "text.config.firewall-config.category.packetIdentifiers.tooltip": "Допускаемые идентификаторы пакетов - см. https://minecraft.wiki/w/Java_Edition_protocol/Packets",
+  "text.config.firewall-config.option.packetIdentifiers.send": "Отправляемые",
+  "text.config.firewall-config.option.packetIdentifiers.recv": "Получаемые",
+
+  "text.config.firewall-config.category.customPayloadIdentifiers": "Идентификаторы кастомных пакетов",
+  "text.config.firewall-config.category.customPayloadIdentifiers.tooltip": "Клиенты, общающиеся с серверами, иногда используют кастомные пакеты, известные как custom payload и plugin channel.\nВот некоторые идентификаторы, подавление которых возможно пригодится:\n\nminecraft:brand: Пакет бренда, используется Ванильными и Модифицированными клиентами.\nminecraft:register: Сообщает получателю, какие каналы (кастомные пакеты) принимает отправитель.\nminecraft:unregister: Сообщает получателю, какие каналы отправитель теперь не принимает.\nvisiblebarriers:mod_installed: Мод Visible Barriers отправляет этот пакет серверу при входе на сервер.",
+  "text.config.firewall-config.option.customPayloadIdentifiers.send": "Отправляемые",
+  "text.config.firewall-config.option.customPayloadIdentifiers.recv": "Получаемые",
+
   "text.config.firewall-config.option.shouldOverwriteBrand": "Переписывать бренд (brand)",
   "text.config.firewall-config.option.brandBehavior.tooltip": "Пакет бренда говорит серверу, какой клиент используется, например 'vanilla', 'fabric', etc.",
   "text.config.firewall-config.option.brandOverwriteValue": "Переписанное значение бренда",
-  "text.config.firewall-config.option.brandOverwriteValue.tooltip": "'vanilla', 'fabric' - что угодно. Используется, только если включена предыдущая опция.",
-
-  "text.config.firewall-config.option.sentCustomPayloadIdentifiers": "Подавляемые идентификаторы отправленных кастомных пакетов",
-  "text.config.firewall-config.option.sentCustomPayloadIdentifiers.tooltip": "Клиенты, общающиеся с серверами, иногда используют кастомные пакеты, известные как custom payload и plugin channel.\nВот некоторые идентификаторы, подавление которых возможно пригодится:\n\nminecraft:brand: Пакет бренда, используется Ванильными и Модифицированными клиентами.\nminecraft:register: Сообщает получателю, какие каналы (кастомные пакеты) принимает отправитель.\nminecraft:unregister: Сообщает получателю, какие каналы отправитель теперь не принимает.\nvisiblebarriers:mod_installed: Мод Visible Barriers отправляет этот пакет серверу при входе на сервер.",
-  "text.config.firewall-config.option.receivedCustomPayloadIdentifiers": "Подавляемые идентификаторы полученных кастомных пакетов",
-  "text.config.firewall-config.option.receivedCustomPayloadIdentifiers.tooltip": "Клиенты, общающиеся с серверами, иногда используют кастомные пакеты, известные как custom payload и plugin channel.\nВот некоторые идентификаторы, подавление которых возможно пригодится:\n\nminecraft:brand: Пакет бренда, используется Ванильными и Модифицированными клиентами.\nminecraft:register: Сообщает получателю, какие каналы (кастомные пакеты) принимает отправитель.\nminecraft:unregister: Сообщает получателю, какие каналы отправитель теперь не принимает.\nvisiblebarriers:mod_installed: Мод Visible Barriers отправляет этот пакет серверу при входе на сервер."
+  "text.config.firewall-config.option.brandOverwriteValue.tooltip": "'vanilla', 'fabric' - что угодно. Используется, только если включена предыдущая опция."
 }

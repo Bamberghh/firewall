@@ -10,8 +10,14 @@ import java.util.regex.Pattern;
 @SuppressWarnings("unused")
 @Config(name = "firewall-config", wrapperName = "FirewallConfig", defaultHook = true)
 public class FirewallConfigModel {
-    public StringMask sentCustomPayloadIdentifiers = new StringMask();
-    public StringMask receivedCustomPayloadIdentifiers = new StringMask();
+    public static class SendRecvStringMask {
+        public StringMask send = new StringMask();
+        public StringMask recv = new StringMask();
+    }
+    @Nest
+    public SendRecvStringMask packetIdentifiers = new SendRecvStringMask();
+    @Nest
+    public SendRecvStringMask customPayloadIdentifiers = new SendRecvStringMask();
 
     public boolean shouldOverwriteBrand = false;
     public String brandOverwriteValue = "vanilla";

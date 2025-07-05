@@ -12,6 +12,7 @@ import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.parsing.UIModel;
 import io.wispforest.owo.util.Observable;
+import me.bamberghh.firewall.Firewall;
 import me.bamberghh.firewall.util.IndexHashSet;
 import me.bamberghh.firewall.util.StringMask;
 import net.minecraft.client.gui.screen.Screen;
@@ -162,7 +163,7 @@ public class StringMaskContainer extends CollapsibleContainer implements OptionV
                 .children()
                 .getFirst()
                 .<LabelComponent>configure(
-                        label -> label.text(Text.translatable("text.config.firewall.stringmask.list")));
+                        label -> label.text(Text.translatable(String.format("text.config.%s.stringmask.list", Firewall.CONFIG.name()))));
 
         regexTextBoxComponent = Components.textBox(Sizing.expand(), mask.regex.pattern());
 

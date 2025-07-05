@@ -3,9 +3,8 @@
 	"package": "me.bamberghh.firewall.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"BrandCustomPayloadMixin",
-		"ClientCommonNetworkHandlerMixin",
-		"ClientConnectionMixin"
+		"ClientConnectionMixin",
+		"BrandCustomPayloadMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

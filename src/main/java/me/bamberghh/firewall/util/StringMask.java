@@ -1,5 +1,7 @@
 package me.bamberghh.firewall.util;
 
+import net.minecraft.util.Identifier;
+
 import java.util.regex.Pattern;
 
 public class StringMask {
@@ -33,5 +35,9 @@ public class StringMask {
             }
         }
         return false;
+    }
+
+    public boolean accepts(Identifier id) {
+        return acceptsEverything() || !acceptsNothing() && accepts(id.toString());
     }
 }
