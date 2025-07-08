@@ -8,10 +8,10 @@
 		"Bamberghh"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/Bamberghh/firewall",
+		"sources": "https://github.com/Bamberghh/firewall"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/firewall/icon.png",
 	"environment": "client",
 	"entrypoints": {
