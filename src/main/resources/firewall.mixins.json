@@ -1,15 +1,18 @@
 {
-	"required": true,
-	"package": "me.bamberghh.firewall.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"client": [
-		"ClientConnectionMixin",
-		"BrandCustomPayloadMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
-	}
+  "required": true,
+  "package": "me.bamberghh.firewall.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "BrandCustomPayloadMixin",
+    "ClientConnectionMixin",
+    "RegistrationPayloadMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  },
+  "mixins": [
+  ]
 }

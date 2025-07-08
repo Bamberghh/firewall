@@ -101,6 +101,10 @@ publishing {
 	}
 }
 
+loom {
+	accessWidenerPath = file("src/main/resources/firewall.accesswidener")
+}
+
 sourceSets {
 	main {
 		java {

@@ -14,7 +14,7 @@ import io.wispforest.owo.ui.parsing.UIModel;
 import io.wispforest.owo.util.Observable;
 import me.bamberghh.firewall.Firewall;
 import me.bamberghh.firewall.util.IndexHashSet;
-import me.bamberghh.firewall.util.StringMask;
+import me.bamberghh.firewall.util.SimpleStringFilter;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;
@@ -25,10 +25,11 @@ import java.lang.reflect.Field;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
-public class StringMaskContainer extends CollapsibleContainer implements OptionValueProvider {
+public class StringFilterContainer extends CollapsibleContainer implements OptionValueProvider {
     public static class KindButton extends ButtonComponent implements OptionValueProvider {
-        @Nullable protected Option<StringMask> backingOption = null;
+        @Nullable protected Option<SimpleStringFilter> backingOption = null;
         @Nullable protected Enum<?>[] backingValues = null;
         protected int selectedIndex = 0;
 
@@ -74,12 +75,12 @@ public class StringMaskContainer extends CollapsibleContainer implements OptionV
             assert this.backingValues[this.selectedIndex] != null;
             var valueName = this.backingValues[this.selectedIndex].name().toLowerCase(Locale.ROOT);
 
-            this.setMessage(Text.translatable("text.config." + this.backingOption.configName() + ".stringmask.kind." + valueName));
+            this.setMessage(Text.translatable("text.config." + this.backingOption.configName() + ".stringfilter.kind." + valueName));
         }
 
-        public KindButton init(Option<StringMask> option, int selectedIndex) {
+        public KindButton init(Option<SimpleStringFilter> option, int selectedIndex) {
             this.backingOption = option;
-            this.backingValues = StringMask.Kind.class.getEnumConstants();
+            this.backingValues = SimpleStringFilter.Kind.class.getEnumConstants();
             this.selectedIndex = selectedIndex;
 
             this.updateMessage();
@@ -99,8 +100,8 @@ public class StringMaskContainer extends CollapsibleContainer implements OptionV
             return true;
         }
 
-        public StringMask.Kind value() {
-            return (StringMask.Kind) this.backingValues[this.selectedIndex];
+        public SimpleStringFilter.Kind value() {
+            return (SimpleStringFilter.Kind) this.backingValues[this.selectedIndex];
         }
 
         @Override
@@ -113,19 +114,19 @@ public class StringMaskContainer extends CollapsibleContainer implements OptionV
     protected SetOptionContainer<String> subValueContainer;
     protected TextBoxComponent regexTextBoxComponent;
 
-    public StringMaskContainer(UIModel model, Option<StringMask> option) {
+    public StringFilterContainer(UIModel model, Option<SimpleStringFilter> option) {
         super(
                 Sizing.fill(100), Sizing.content(),
                 Text.translatable("text.config." + option.configName() + ".option." + option.key().asString()),
                 option.backingField().field().isAnnotationPresent(Expanded.class)
         );
 
-        var mask = option.value();
+        var filter = option.value();
 
-        kindButton = new KindButton().init(option, mask.kind.ordinal());
+        kindButton = new KindButton().init(option, filter.kind.ordinal());
         kindButton.onPress(buttonComponent -> {
             this.collapsibleChildren.remove(1);
-            if (kindButton.value() == StringMask.Kind.Regex) {
+            if (kindButton.value() == SimpleStringFilter.Kind.Regex) {
                 this.collapsibleChildren.add(regexTextBoxComponent);
             } else {
                 this.collapsibleChildren.add(subValueContainer);
@@ -136,7 +137,7 @@ public class StringMaskContainer extends CollapsibleContainer implements OptionV
             });
         });
 
-        var subValueObservable = Observable.of((Set<String>) mask.list);
+        var subValueObservable = Observable.of((Set<String>) filter.list);
 
         Field subValueObservableField;
         try {
@@ -164,12 +165,14 @@ public class StringMaskContainer extends CollapsibleContainer implements OptionV
                 .children()
                 .getFirst()
                 .<LabelComponent>configure(
-                        label -> label.text(Text.translatable(String.format("text.config.%s.stringmask.list", Firewall.CONFIG.name()))));
+                        label -> label.text(Text.translatable(String.format("text.config.%s.stringfilter.list", Firewall.CONFIG.name()))));
 
-        regexTextBoxComponent = Components.textBox(Sizing.expand(), mask.regex.pattern());
+        regexTextBoxComponent = Components.textBox(Sizing.expand());
+        regexTextBoxComponent.setMaxLength(Integer.MAX_VALUE);
+        regexTextBoxComponent.text(filter.regex.pattern());
 
         this.collapsibleChildren.add(kindButton);
-        if (kindButton.value() == StringMask.Kind.Regex) {
+        if (kindButton.value() == SimpleStringFilter.Kind.Regex) {
             this.collapsibleChildren.add(regexTextBoxComponent);
         } else {
             this.collapsibleChildren.add(subValueContainer);
@@ -187,15 +190,21 @@ public class StringMaskContainer extends CollapsibleContainer implements OptionV
 
     @Override
     public boolean isValid() {
+        try {
+            Pattern.compile(regexTextBoxComponent.getText());
+        } catch (PatternSyntaxException e) {
+            Firewall.LOGGER.info("firewall: bad regex {}: {}", regexTextBoxComponent.getText(), e);
+            return false;
+        }
         return true;
     }
 
     @Override
     public Object parsedValue() {
-        var mask = new StringMask();
-        mask.kind = kindButton.value();
-        mask.list = subValueContainer.value();
-        mask.regex = Pattern.compile(regexTextBoxComponent.getText());
-        return mask;
+        var filter = new SimpleStringFilter();
+        filter.kind = kindButton.value();
+        filter.list = subValueContainer.value();
+        filter.regex = Pattern.compile(regexTextBoxComponent.getText());
+        return filter;
     }
 }

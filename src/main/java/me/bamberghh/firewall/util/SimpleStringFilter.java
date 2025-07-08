@@ -1,10 +1,8 @@
 package me.bamberghh.firewall.util;
 
-import net.minecraft.util.Identifier;
-
 import java.util.regex.Pattern;
 
-public class StringMask {
+public class SimpleStringFilter implements StringFilter {
     public enum Kind {
         Blacklist,
         Whitelist,
@@ -35,9 +33,5 @@ public class StringMask {
             }
         }
         return false;
-    }
-
-    public boolean accepts(Identifier id) {
-        return acceptsEverything() || !acceptsNothing() && accepts(id.toString());
     }
 }

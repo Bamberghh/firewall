@@ -4,7 +4,7 @@ import io.wispforest.owo.config.ConfigWrapper;
 import io.wispforest.owo.config.Option;
 import io.wispforest.owo.config.ui.ConfigScreen;
 import io.wispforest.owo.config.ui.OptionComponentFactory;
-import me.bamberghh.firewall.util.StringMask;
+import me.bamberghh.firewall.util.SimpleStringFilter;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -18,8 +18,8 @@ public class FirewallConfigScreen extends ConfigScreen {
             var layout = new SetOptionContainer(option);
             return new OptionComponentFactory.Result<>(layout, layout);
         });
-        extraFactories.put(option -> option.clazz() == StringMask.class, (model, option) -> {
-            var layout = new StringMaskContainer(model, (Option<StringMask>) (Object) option);
+        extraFactories.put(option -> option.clazz() == SimpleStringFilter.class, (model, option) -> {
+            var layout = new StringFilterContainer(model, (Option<SimpleStringFilter>) (Object) option);
             return new OptionComponentFactory.Result<>(layout, layout);
         });
     }

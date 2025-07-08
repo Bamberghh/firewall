@@ -22,6 +22,7 @@
 	"mixins": [
 		"firewall.mixins.json"
 	],
+	"accessWidener": "firewall.accesswidener",
 	"depends": {
 		"fabricloader": ">=0.16.14",
 		"minecraft": "~1.21.3",

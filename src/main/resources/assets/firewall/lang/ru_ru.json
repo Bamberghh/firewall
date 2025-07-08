@@ -53,10 +53,10 @@
     " Выключено"
   ],
 
-  "text.config.firewall-config.stringmask.kind.whitelist": "Белый список",
-  "text.config.firewall-config.stringmask.kind.blacklist": "Черный список",
-  "text.config.firewall-config.stringmask.kind.regex": "Регулярное выражение",
-  "text.config.firewall-config.stringmask.list": "Список",
+  "text.config.firewall-config.stringfilter.kind.whitelist": "Белый список",
+  "text.config.firewall-config.stringfilter.kind.blacklist": "Черный список",
+  "text.config.firewall-config.stringfilter.kind.regex": "Регулярное выражение",
+  "text.config.firewall-config.stringfilter.list": "Список",
 
   "text.config.firewall-config.title": "Настройка Firewall",
 
@@ -68,9 +68,17 @@
 
   "text.config.firewall-config.category.customPayloadIdentifiers": "Идентификаторы кастомных пакетов",
   "text.config.firewall-config.category.customPayloadIdentifiers.tooltip": "Клиенты, общающиеся с серверами, иногда используют кастомные пакеты, известные как custom payload и plugin channel.\nВот некоторые идентификаторы, подавление которых возможно пригодится:\n\nminecraft:brand: Пакет бренда, используется Ванильными и Модифицированными клиентами.\nminecraft:register: Сообщает получателю, какие каналы (кастомные пакеты) принимает отправитель.\nminecraft:unregister: Сообщает получателю, какие каналы отправитель теперь не принимает.\nvisiblebarriers:mod_installed: Мод Visible Barriers отправляет этот пакет серверу при входе на сервер.",
+  "text.config.firewall-config.option.customPayloadIdentifiers.useFromRegister": "Использовать из опции \"Идентификаторы кастомных пакетов\" ниже",
   "text.config.firewall-config.option.customPayloadIdentifiers.comm": "Все",
   "text.config.firewall-config.option.customPayloadIdentifiers.send": "Отправляемые",
   "text.config.firewall-config.option.customPayloadIdentifiers.recv": "Получаемые",
+
+  "text.config.firewall-config.category.registerIdentifiers": "Идентификаторы регистрируемых каналов",
+  "text.config.firewall-config.category.registerIdentifiers.tooltip": "Разрешенные идентификаторы каналов в пакетах minecraft:register и minecraft:unregister,\nотправляемые Bukkit, BungeeCord, Velocity и Fabric API.",
+  "text.config.firewall-config.option.registerIdentifiers.useFromCustomPayload": "Использовать из опции \"Идентификаторы кастомных пакетов\" выше",
+  "text.config.firewall-config.option.registerIdentifiers.comm": "Все",
+  "text.config.firewall-config.option.registerIdentifiers.send": "Отправляемые",
+  "text.config.firewall-config.option.registerIdentifiers.recv": "Получаемые",
 
   "text.config.firewall-config.option.shouldOverwriteBrand": "Переписывать бренд (brand)",
   "text.config.firewall-config.option.brandBehavior.tooltip": "Пакет бренда говорит серверу, какой клиент используется, например 'vanilla', 'fabric', etc.",
