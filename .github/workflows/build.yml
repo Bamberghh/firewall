@@ -8,6 +8,8 @@ on: [pull_request, push]
 
 jobs:
   build:
+    permissions:
+      contents: write
     environment: mc-publish
     runs-on: ubuntu-24.04
     steps:
