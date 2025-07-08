@@ -28,7 +28,7 @@
 		"minecraft": "${minecraft_version}",
 		"java": ">=21",
 		"fabric-api": "*",
-		"owo-ui": "*"
+		"owo": "*"
 	},
 	"suggests": {
 		"modmenu": "*"
