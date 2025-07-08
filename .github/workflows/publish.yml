@@ -2,7 +2,10 @@ name: publish
 on: workflow_dispatch
 
 jobs:
-  build:
+  publish:
+    permissions:
+      contents: write
+    environment: mc-publish
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
