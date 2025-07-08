@@ -15,11 +15,13 @@ public class FirewallConfigScreen extends ConfigScreen {
     protected FirewallConfigScreen(Identifier modelId, ConfigWrapper<?> config, @Nullable Screen parent) {
         super(modelId, config, parent);
         extraFactories.put(option -> option.clazz() == Set.class, (model, option) -> {
-            var layout = new SetOptionContainer(option);
+            //noinspection unchecked
+            var layout = new SetOptionContainer<>((Option<Set<Object>>) (Object) option);
             return new OptionComponentFactory.Result<>(layout, layout);
         });
         extraFactories.put(option -> option.clazz() == SimpleStringFilter.class, (model, option) -> {
-            var layout = new StringFilterContainer(model, (Option<SimpleStringFilter>) (Object) option);
+            //noinspection unchecked
+            var layout = new StringFilterContainer((Option<SimpleStringFilter>) (Object) option);
             return new OptionComponentFactory.Result<>(layout, layout);
         });
     }

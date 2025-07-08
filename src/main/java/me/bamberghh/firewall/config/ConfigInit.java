@@ -20,7 +20,7 @@ public class ConfigInit {
     private ConfigInit(me.bamberghh.firewall.config.FirewallConfig config) throws IllegalAccessException {
         this.config = config;
         model = (FirewallConfigModel) FieldUtils.readField(config, "instance", true);
-    };
+    }
 
     public static void init(me.bamberghh.firewall.config.FirewallConfig config)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
@@ -66,8 +66,7 @@ public class ConfigInit {
                     Option.SyncMode.NONE,
                     null);
             FieldUtils.writeField(config, String.join("_", key.path()), option, true);
-            //noinspection unchecked
-            internalOptions.put(key, (Option<Object>) (Option<?>) option);
+            internalOptions.put(key, option);
         }
     }
 

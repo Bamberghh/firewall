@@ -10,14 +10,12 @@ import io.wispforest.owo.ui.component.TextBoxComponent;
 import io.wispforest.owo.ui.container.CollapsibleContainer;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Sizing;
-import io.wispforest.owo.ui.parsing.UIModel;
 import io.wispforest.owo.util.Observable;
 import me.bamberghh.firewall.Firewall;
 import me.bamberghh.firewall.util.IndexHashSet;
 import me.bamberghh.firewall.util.SimpleStringFilter;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -71,9 +69,9 @@ public class StringFilterContainer extends CollapsibleContainer implements Optio
         protected void updateMessage() {
             if (this.backingOption == null) return;
 
-            var enumName = StringUtils.uncapitalize(this.backingValues.getClass().componentType().getSimpleName());
-            assert this.backingValues[this.selectedIndex] != null;
-            var valueName = this.backingValues[this.selectedIndex].name().toLowerCase(Locale.ROOT);
+            var backingValue = this.backingValues[this.selectedIndex];
+            assert backingValue != null;
+            var valueName = backingValue.name().toLowerCase(Locale.ROOT);
 
             this.setMessage(Text.translatable("text.config." + this.backingOption.configName() + ".stringfilter.kind." + valueName));
         }
@@ -114,7 +112,7 @@ public class StringFilterContainer extends CollapsibleContainer implements Optio
     protected SetOptionContainer<String> subValueContainer;
     protected TextBoxComponent regexTextBoxComponent;
 
-    public StringFilterContainer(UIModel model, Option<SimpleStringFilter> option) {
+    public StringFilterContainer(Option<SimpleStringFilter> option) {
         super(
                 Sizing.fill(100), Sizing.content(),
                 Text.translatable("text.config." + option.configName() + ".option." + option.key().asString()),
