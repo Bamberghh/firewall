@@ -24,12 +24,6 @@ jobs:
           name: Artifacts
           path: build/libs/
 
-  mc-publish:
-    permissions:
-      contents: write
-    environment: mc-publish
-    runs-on: ubuntu-latest
-    steps:
       - name: mc-publish
         uses: Kira-NT/mc-publish@v3.3.0
         with:
