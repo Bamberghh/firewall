@@ -8,7 +8,7 @@
 		"Bamberghh"
 	],
 	"contact": {
-		"homepage": "https://github.com/Bamberghh/firewall",
+		"homepage": "https://modrinth.com/mod/firewall",
 		"sources": "https://github.com/Bamberghh/firewall"
 	},
 	"license": "MIT",
@@ -27,6 +27,10 @@
 		"fabricloader": ">=0.16.14",
 		"minecraft": "~1.21.3",
 		"java": ">=21",
-		"fabric-api": "*"
+		"fabric-api": "*",
+		"owo-ui": "*"
+	},
+	"suggests": {
+		"modmenu": "*"
 	}
 }
