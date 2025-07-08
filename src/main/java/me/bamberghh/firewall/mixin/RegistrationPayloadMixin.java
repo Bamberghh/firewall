@@ -12,6 +12,6 @@ import java.util.List;
 @Mixin(RegistrationPayload.class)
 public interface RegistrationPayloadMixin {
     @Mutable
-    @Accessor("channels")
+    @Accessor(value = "channels", remap = false)
     void setChannels(List<Identifier> channels);
 }

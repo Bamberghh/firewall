@@ -2,6 +2,7 @@ package me.bamberghh.firewall.mixin;
 
 import io.netty.channel.ChannelHandlerContext;
 import me.bamberghh.firewall.Firewall;
+import me.bamberghh.firewall.util.StringFilter;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketCallbacks;
@@ -9,15 +10,18 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("UnstableApiUsage") // Fabric's RegistrationPayload's package is unstable
 @Mixin(ClientConnection.class)
@@ -45,6 +49,7 @@ public abstract class ClientConnectionMixin {
 		String customPayloadId = payload.getId().id().toString();
 		if (!Firewall.CONFIG.customPayloadIdentifiers.sendMerged().accepts(customPayloadId)) {
 			Firewall.LOGGER.info("{}: suppressed sent custom payload packet {}", Firewall.MOD_ID, customPayloadId);
+			// Mimic the normal sending behavior
 			if (flush) {
 				flush();
 			}
@@ -57,23 +62,17 @@ public abstract class ClientConnectionMixin {
         if (!(payload instanceof RegistrationPayload registration)) {
 			return;
 		}
-		int initialChannelsSize = registration.channels().size();
 		var sendMerged = Firewall.CONFIG.registerIdentifiers.sendMerged();
-		if (sendMerged.acceptsEverything()) {
-			return;
-		}
-		List<Identifier> filteredChannels;
-		if (sendMerged.acceptsNothing()) {
-            filteredChannels = Collections.emptyList();
-		} else {
-			filteredChannels = registration.channels()
-					.stream()
-					.filter(sendMerged::accepts)
-					.toList();
-		}
-		if (initialChannelsSize != filteredChannels.size()) {
-			((RegistrationPayloadMixin) (Object) registration).setChannels(filteredChannels);
-			Firewall.LOGGER.info("{}: filtered sent {} packet", Firewall.MOD_ID, registration.id().id());
+		var partitionedChannels = partitionChannels(registration.channels(), sendMerged);
+		var rejectedChannels = partitionedChannels.getLeft();
+		var acceptedChannels = partitionedChannels.getRight();
+		if (!rejectedChannels.isEmpty()) {
+			((RegistrationPayloadMixin) (Object) registration).setChannels(acceptedChannels);
+			Firewall.LOGGER.info("{}: filtered sent {} packet: rejected: {} ({}); accepted: {} ({})",
+					Firewall.MOD_ID,
+					registration.id().id(),
+					rejectedChannels, rejectedChannels.size(),
+					acceptedChannels, acceptedChannels.size());
 		}
 	}
 
@@ -98,19 +97,30 @@ public abstract class ClientConnectionMixin {
 			return;
 		}
 		var recvMerged = Firewall.CONFIG.registerIdentifiers.recvMerged();
-		if (recvMerged.acceptsEverything()) {
-			return;
+		var partitionedChannels = partitionChannels(registration.channels(), recvMerged);
+		var rejectedChannels = partitionedChannels.getLeft();
+		var acceptedChannels = partitionedChannels.getRight();
+		if (!rejectedChannels.isEmpty()) {
+			((RegistrationPayloadMixin) (Object) registration).setChannels(acceptedChannels);
+			Firewall.LOGGER.info("{}: filtered received {} packet: rejected: {} ({}); accepted: {} ({})",
+					Firewall.MOD_ID,
+					registration.id().id(),
+					rejectedChannels, rejectedChannels.size(),
+					acceptedChannels, acceptedChannels.size());
 		}
-		List<Identifier> filteredChannels;
-		if (recvMerged.acceptsNothing()) {
-			filteredChannels = Collections.emptyList();
-		} else {
-			filteredChannels = registration.channels()
-					.stream()
-					.filter(recvMerged::accepts)
-					.toList();
+	}
+
+	@Unique
+	private static Pair<List<Identifier>, List<Identifier>> partitionChannels(List<Identifier> channels, StringFilter filter) {
+		if (filter.acceptsNothing()) {
+			return Pair.of(channels, Collections.emptyList());
 		}
-		((RegistrationPayloadMixin) (Object) registration).setChannels(filteredChannels);
-		Firewall.LOGGER.info("{}: filtered received {} packet", Firewall.MOD_ID, registration.id().id());
+		if (filter.acceptsEverything()) {
+			return Pair.of(Collections.emptyList(), channels);
+		}
+		var partitionedChannels = channels
+				.stream()
+				.collect(Collectors.partitioningBy(filter::accepts));
+		return Pair.of(partitionedChannels.get(false), partitionedChannels.get(true));
 	}
 }

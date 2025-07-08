@@ -60,7 +60,7 @@ public class FirewallConfigModel {
         public transient StringFilter recvMerged = null;
     }
     public static class RegisterIdentifiers {
-        public boolean useFromCustomPayload = false;
+        public boolean useFromCustomPayload = true;
         public SimpleStringFilter comm = new SimpleStringFilter();
         public SimpleStringFilter send = new SimpleStringFilter();
         public SimpleStringFilter recv = new SimpleStringFilter();
