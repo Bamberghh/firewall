@@ -28,3 +28,13 @@ jobs:
         with:
           name: Artifacts
           path: build/libs/
+      - name: mc-publish
+        uses: Kira-NT/mc-publish@v3.3.0
+        with:
+          modrinth-id: hxSZAaAL
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          curseforge-id: 1302854
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          github-token: ${{ secrets.GITHUB_TOKEN }}
