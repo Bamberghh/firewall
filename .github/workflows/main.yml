@@ -1,8 +1,21 @@
-name: publish
-on: workflow_dispatch
+# Automatically build the project and run any configured tests for every push
+# and submitted pull request. This can help catch issues that only occur on
+# certain platforms or Java versions, and provides a first line of defence
+# against bad commits.
+
+name: main
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      shouldPublish:
+        description: 'Should the mod be published'
+        required: true
+        type: boolean
 
 jobs:
-  publish:
+  main:
     permissions:
       contents: write
     environment: mc-publish
@@ -27,8 +40,13 @@ jobs:
           name: Artifacts
           path: build/libs/
 
-      - name: mc-publish
+      - name: Publish
+        id: publish
         uses: Kira-NT/mc-publish@v3.3.0
+        if: "
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.shouldPublish) ||
+          (github.event_name == 'push' && contains(github.event.head_commit.message, '[publish]'))"
+
         with:
           changelog-file: CHANGELOG.md
 
