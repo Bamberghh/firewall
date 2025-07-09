@@ -64,6 +64,8 @@ public class FirewallConfigModel {
         public SimpleStringFilter comm = new SimpleStringFilter();
         public SimpleStringFilter send = new SimpleStringFilter();
         public SimpleStringFilter recv = new SimpleStringFilter();
+        public boolean sendEmptyChannelLists = false;
+        public boolean recvEmptyChannelLists = true;
 
         @Computed(inputs = {"comm", "send", "useFromCustomPayload", "/customPayloadIdentifiers/comm", "/customPayloadIdentifiers/send"}, output = MergeFiltersWithBool.class)
         public transient StringFilter sendMerged = null;

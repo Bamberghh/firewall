@@ -33,13 +33,7 @@ public abstract class ClientConnectionMixin {
 		String packetId = packet.getPacketId().id().toString();
 		if (!Firewall.CONFIG.packetIdentifiers.sendMerged().accepts(packetId)) {
 			Firewall.LOGGER.info("{}: rejected sent packet {}", Firewall.MOD_ID, packetId);
-			// Mimic the normal sending behavior
-			if (flush) {
-				flush();
-			}
-			if (callbacks != null) {
-				callbacks.onSuccess();
-			}
+			onSendCancel(flush, callbacks);
 			ci.cancel();
 			return;
 		}
@@ -49,13 +43,7 @@ public abstract class ClientConnectionMixin {
 		String customPayloadId = payload.getId().id().toString();
 		if (!Firewall.CONFIG.customPayloadIdentifiers.sendMerged().accepts(customPayloadId)) {
 			Firewall.LOGGER.info("{}: rejected sent custom payload packet {}", Firewall.MOD_ID, customPayloadId);
-			// Mimic the normal sending behavior
-			if (flush) {
-				flush();
-			}
-			if (callbacks != null) {
-				callbacks.onSuccess();
-			}
+			onSendCancel(flush, callbacks);
 			ci.cancel();
 			return;
 		}
@@ -63,7 +51,11 @@ public abstract class ClientConnectionMixin {
 			return;
 		}
 		var sendMerged = Firewall.CONFIG.registerIdentifiers.sendMerged();
-		modifyRegistrationPayload("sent", sendMerged, registration);
+		boolean cancel = modifyRegistrationPayload(false, sendMerged, registration);
+		if (cancel) {
+			onSendCancel(flush, callbacks);
+			ci.cancel();
+		}
 	}
 
 	@Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V", at = @At("HEAD"), cancellable = true)
@@ -87,7 +79,21 @@ public abstract class ClientConnectionMixin {
 			return;
 		}
 		var recvMerged = Firewall.CONFIG.registerIdentifiers.recvMerged();
-		modifyRegistrationPayload("received", recvMerged, registration);
+		boolean cancel = modifyRegistrationPayload(true, recvMerged, registration);
+		if (cancel) {
+			ci.cancel();
+		}
+	}
+
+	@Unique
+	private void onSendCancel(boolean flush, @Nullable PacketCallbacks callbacks) {
+		// Mimic the normal sending behavior when rejecting a packet (cancelling CallbackInfo)
+		if (flush) {
+			flush();
+		}
+		if (callbacks != null) {
+			callbacks.onSuccess();
+		}
 	}
 
 	@Unique
@@ -105,18 +111,25 @@ public abstract class ClientConnectionMixin {
 	}
 
 	@Unique
-	private static void modifyRegistrationPayload(String sentOrReceived, StringFilter filter, RegistrationPayload registration) {
+	private static boolean modifyRegistrationPayload(boolean recv, StringFilter filter, RegistrationPayload registration) {
 		var partitionedChannels = partitionChannels(registration.channels(), filter);
 		var rejectedChannels = partitionedChannels.getLeft();
 		var acceptedChannels = partitionedChannels.getRight();
+		boolean cancel =
+				acceptedChannels.isEmpty()
+						&& (recv
+						? !Firewall.CONFIG.registerIdentifiers.recvEmptyChannelLists()
+						: !Firewall.CONFIG.registerIdentifiers.sendEmptyChannelLists());
 		if (!rejectedChannels.isEmpty()) {
 			((RegistrationPayloadMixin) (Object) registration).setChannels(acceptedChannels);
-			Firewall.LOGGER.info("{}: filtered {} {} packet channels: rejected: {} ({}); accepted: {} ({})",
+			Firewall.LOGGER.info("{}: filtered{} {} {} packet channels: rejected: {} ({}); accepted: {} ({})",
 					Firewall.MOD_ID,
-					sentOrReceived,
+					cancel ? " & rejected" : "",
+					recv ? "received" : "sent",
 					registration.id().id(),
 					rejectedChannels, rejectedChannels.size(),
 					acceptedChannels, acceptedChannels.size());
 		}
+		return cancel;
 	}
 }

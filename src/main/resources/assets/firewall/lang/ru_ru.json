@@ -68,7 +68,7 @@
 
   "text.config.firewall-config.category.customPayloadIdentifiers": "Идентификаторы кастомных пакетов",
   "text.config.firewall-config.category.customPayloadIdentifiers.tooltip": "Клиенты, общающиеся с серверами, иногда используют кастомные пакеты, известные как custom payload и plugin channel.\nВот некоторые идентификаторы, подавление которых возможно пригодится:\n\nminecraft:brand: Пакет бренда, используется Ванильными и Модифицированными клиентами.\nminecraft:register: Сообщает получателю, какие каналы (кастомные пакеты) принимает отправитель.\nminecraft:unregister: Сообщает получателю, какие каналы отправитель теперь не принимает.\nvisiblebarriers:mod_installed: Мод Visible Barriers отправляет этот пакет серверу при входе на сервер.",
-  "text.config.firewall-config.option.customPayloadIdentifiers.useFromRegister": "Использовать из опции \"Идентификаторы кастомных пакетов\" ниже",
+  "text.config.firewall-config.option.customPayloadIdentifiers.useFromRegister": "Использовать из опции \"Идентификаторы регистрируемых пакетов\" ниже",
   "text.config.firewall-config.option.customPayloadIdentifiers.comm": "Все",
   "text.config.firewall-config.option.customPayloadIdentifiers.send": "Отправляемые",
   "text.config.firewall-config.option.customPayloadIdentifiers.recv": "Получаемые",
@@ -77,7 +77,11 @@
   "text.config.firewall-config.category.registerIdentifiers.tooltip": "Разрешенные идентификаторы каналов в пакетах minecraft:register и minecraft:unregister,\nотправляемые Bukkit, BungeeCord, Velocity и Fabric API.",
   "text.config.firewall-config.option.registerIdentifiers.useFromCustomPayload": "Использовать из опции \"Идентификаторы кастомных пакетов\" выше",
   "text.config.firewall-config.option.registerIdentifiers.comm": "Все",
+  "text.config.firewall-config.option.registerIdentifiers.sendEmptyChannelLists": "Отправлять пустые списки каналов",
+  "text.config.firewall-config.option.registerIdentifiers.sendEmptyChannelLists.tooltip": "Должен ли мод отправлять или отторгать пустые списки каналов.\nFabric API изнутри отправляет список каналов только если он не пуст.",
   "text.config.firewall-config.option.registerIdentifiers.send": "Отправляемые",
+  "text.config.firewall-config.option.registerIdentifiers.recvEmptyChannelLists": "Получать пустые списки каналов",
+  "text.config.firewall-config.option.registerIdentifiers.recvEmptyChannelLists.tooltip": "Должен ли мод получать или отторгать пустые списки каналов.\nFabric API изнутри отправляет список каналов только если он не пуст.",
   "text.config.firewall-config.option.registerIdentifiers.recv": "Получаемые",
 
   "text.config.firewall-config.option.shouldOverwriteBrand": "Переписывать бренд (brand)",
