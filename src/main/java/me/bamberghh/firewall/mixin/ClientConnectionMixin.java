@@ -9,6 +9,7 @@ import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
+import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
@@ -31,16 +32,27 @@ public abstract class ClientConnectionMixin {
 	@Inject(method = "send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;Z)V", at = @At("HEAD"), cancellable = true)
 	private void send(Packet<?> packet, @Nullable PacketCallbacks callbacks, boolean flush, CallbackInfo ci) {
 		String packetId = packet.getPacketId().id().toString();
+		if (Firewall.CONFIG.loggedPacketIdentifiers.sendMerged().accepts(packetId)) {
+			Firewall.LOGGER.info("{}: send packet {}: {}", Firewall.MOD_ID, packetId, packet);
+		}
+		CustomPayload payload = null;
+		String customPayloadId = null;
+		if (packet instanceof CustomPayloadC2SPacket(CustomPayload customPayload)) {
+			payload = customPayload;
+			customPayloadId = payload.getId().id().toString();
+			if (Firewall.CONFIG.loggedCustomPayloadIdentifiers.sendMerged().accepts(customPayloadId)) {
+				Firewall.LOGGER.info("{}: send custom payload {}: {}", Firewall.MOD_ID, customPayloadId, payload);
+			}
+		}
 		if (!Firewall.CONFIG.packetIdentifiers.sendMerged().accepts(packetId)) {
 			Firewall.LOGGER.info("{}: rejected sent packet {}", Firewall.MOD_ID, packetId);
 			onSendCancel(flush, callbacks);
 			ci.cancel();
 			return;
 		}
-		if (!(packet instanceof CustomPayloadC2SPacket(CustomPayload payload))) {
+		if (payload == null) {
 			return;
 		}
-		String customPayloadId = payload.getId().id().toString();
 		if (!Firewall.CONFIG.customPayloadIdentifiers.sendMerged().accepts(customPayloadId)) {
 			Firewall.LOGGER.info("{}: rejected sent custom payload packet {}", Firewall.MOD_ID, customPayloadId);
 			onSendCancel(flush, callbacks);
@@ -61,15 +73,26 @@ public abstract class ClientConnectionMixin {
 	@Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V", at = @At("HEAD"), cancellable = true)
 	protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet<?> packet, CallbackInfo ci) {
 		String packetId = packet.getPacketId().id().toString();
+		if (Firewall.CONFIG.loggedPacketIdentifiers.recvMerged().accepts(packetId)) {
+			Firewall.LOGGER.info("{}: receive packet {}: {}", Firewall.MOD_ID, packetId, packet);
+		}
+		CustomPayload payload = null;
+		String customPayloadId = null;
+		if (packet instanceof CustomPayloadS2CPacket(CustomPayload customPayload)) {
+			payload = customPayload;
+			customPayloadId = payload.getId().id().toString();
+			if (Firewall.CONFIG.loggedCustomPayloadIdentifiers.recvMerged().accepts(customPayloadId)) {
+				Firewall.LOGGER.info("{}: receive custom payload {}: {}", Firewall.MOD_ID, customPayloadId, payload);
+			}
+		}
 		if (!Firewall.CONFIG.packetIdentifiers.recvMerged().accepts(packetId)) {
 			Firewall.LOGGER.info("{}: rejected received packet {}", Firewall.MOD_ID, packetId);
 			ci.cancel();
 			return;
 		}
-		if (!(packet instanceof CustomPayloadC2SPacket(CustomPayload payload))) {
+		if (payload == null) {
 			return;
 		}
-		String customPayloadId = payload.getId().id().toString();
 		if (!Firewall.CONFIG.customPayloadIdentifiers.recvMerged().accepts(customPayloadId)) {
 			Firewall.LOGGER.info("{}: rejected received custom payload packet {}", Firewall.MOD_ID, customPayloadId);
 			ci.cancel();

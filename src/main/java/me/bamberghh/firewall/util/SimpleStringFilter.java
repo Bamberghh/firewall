@@ -12,6 +12,42 @@ public class SimpleStringFilter implements StringFilter {
     public IndexHashSet<String> list = new IndexHashSet<>();
     public Pattern regex = Pattern.compile("");
 
+    private SimpleStringFilter() {}
+
+    public SimpleStringFilter(Kind kind) {
+        this.kind = kind;
+    }
+
+    public SimpleStringFilter(Kind kind, IndexHashSet<String> list, Pattern regex) {
+        this.kind = kind;
+        this.list = list;
+        this.regex = regex;
+    }
+
+    public static SimpleStringFilter blacklist() {
+        return new SimpleStringFilter(Kind.Blacklist);
+    }
+
+    public static SimpleStringFilter blacklist(IndexHashSet<String> list) {
+        return new SimpleStringFilter(Kind.Blacklist, list, Pattern.compile(""));
+    }
+
+    public static SimpleStringFilter whitelist() {
+        return new SimpleStringFilter(Kind.Whitelist);
+    }
+
+    public static SimpleStringFilter whitelist(IndexHashSet<String> list) {
+        return new SimpleStringFilter(Kind.Whitelist, list, Pattern.compile(""));
+    }
+
+    public static SimpleStringFilter regex() {
+        return new SimpleStringFilter(Kind.Regex);
+    }
+
+    public static SimpleStringFilter regex(Pattern pattern) {
+        return new SimpleStringFilter(Kind.Regex, new IndexHashSet<>(), pattern);
+    }
+
     public boolean acceptsNothing() {
         return kind == Kind.Whitelist && list.isEmpty();
     }

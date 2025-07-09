@@ -199,10 +199,6 @@ public class StringFilterContainer extends CollapsibleContainer implements Optio
 
     @Override
     public Object parsedValue() {
-        var filter = new SimpleStringFilter();
-        filter.kind = kindButton.value();
-        filter.list = subValueContainer.value();
-        filter.regex = Pattern.compile(regexTextBoxComponent.getText());
-        return filter;
+        return new SimpleStringFilter(kindButton.value(), subValueContainer.value(), Pattern.compile(regexTextBoxComponent.getText()));
     }
 }

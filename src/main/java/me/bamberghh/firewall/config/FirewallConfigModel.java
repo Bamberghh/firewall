@@ -39,20 +39,28 @@ public class FirewallConfigModel {
         }
     }
     public static class SendRecvStringFilter {
-        public SimpleStringFilter comm = new SimpleStringFilter();
-        public SimpleStringFilter send = new SimpleStringFilter();
-        public SimpleStringFilter recv = new SimpleStringFilter();
+        public SimpleStringFilter comm = SimpleStringFilter.blacklist();
+        public SimpleStringFilter send = SimpleStringFilter.blacklist();
+        public SimpleStringFilter recv = SimpleStringFilter.blacklist();
 
         @Computed(inputs = {"comm", "send"}, output = MergeFilters.class)
         public transient StringFilter sendMerged = null;
         @Computed(inputs = {"comm", "recv"}, output = MergeFilters.class)
         public transient StringFilter recvMerged = null;
+
+        public SendRecvStringFilter() {}
+
+        public SendRecvStringFilter(SimpleStringFilter comm, SimpleStringFilter send, SimpleStringFilter recv) {
+            this.comm = comm;
+            this.send = send;
+            this.recv = recv;
+        }
     }
     public static class CustomPayloadIdentifiers {
         public boolean useFromRegister = false;
-        public SimpleStringFilter comm = new SimpleStringFilter();
-        public SimpleStringFilter send = new SimpleStringFilter();
-        public SimpleStringFilter recv = new SimpleStringFilter();
+        public SimpleStringFilter comm = SimpleStringFilter.blacklist();
+        public SimpleStringFilter send = SimpleStringFilter.blacklist();
+        public SimpleStringFilter recv = SimpleStringFilter.blacklist();
 
         @Computed(inputs = {"comm", "send", "useFromRegister", "/registerIdentifiers/comm", "/registerIdentifiers/send"}, output = MergeFiltersWithBool.class)
         public transient StringFilter sendMerged = null;
@@ -61,9 +69,9 @@ public class FirewallConfigModel {
     }
     public static class RegisterIdentifiers {
         public boolean useFromCustomPayload = true;
-        public SimpleStringFilter comm = new SimpleStringFilter();
-        public SimpleStringFilter send = new SimpleStringFilter();
-        public SimpleStringFilter recv = new SimpleStringFilter();
+        public SimpleStringFilter comm = SimpleStringFilter.blacklist();
+        public SimpleStringFilter send = SimpleStringFilter.blacklist();
+        public SimpleStringFilter recv = SimpleStringFilter.blacklist();
         public boolean sendEmptyChannelLists = false;
         public boolean recvEmptyChannelLists = true;
 
@@ -78,6 +86,15 @@ public class FirewallConfigModel {
 
     public boolean shouldOverwriteBrand = false;
     public String brandOverwriteValue = "vanilla";
+
+    @Nest public SendRecvStringFilter loggedPacketIdentifiers = new SendRecvStringFilter(
+            SimpleStringFilter.whitelist(),
+            SimpleStringFilter.blacklist(),
+            SimpleStringFilter.blacklist());
+    @Nest public SendRecvStringFilter loggedCustomPayloadIdentifiers = new SendRecvStringFilter(
+            SimpleStringFilter.whitelist(),
+            SimpleStringFilter.blacklist(),
+            SimpleStringFilter.blacklist());
 
     public static void builderConsumer(ConfigWrapper.SerializationBuilder builder) {
         builder.addEndec(Pattern.class, Endec.STRING.xmap(

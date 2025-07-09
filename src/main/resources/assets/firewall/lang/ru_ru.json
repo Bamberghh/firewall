@@ -87,5 +87,17 @@
   "text.config.firewall-config.option.shouldOverwriteBrand": "Переписывать бренд (brand)",
   "text.config.firewall-config.option.brandBehavior.tooltip": "Пакет бренда говорит серверу, какой клиент используется, например 'vanilla', 'fabric', etc.",
   "text.config.firewall-config.option.brandOverwriteValue": "Переписанное значение бренда",
-  "text.config.firewall-config.option.brandOverwriteValue.tooltip": "'vanilla', 'fabric' - что угодно. Используется, только если включена предыдущая опция."
+  "text.config.firewall-config.option.brandOverwriteValue.tooltip": "'vanilla', 'fabric' - что угодно. Используется, только если включена предыдущая опция.",
+
+  "text.config.firewall-config.category.loggedPacketIdentifiers": "Идентификаторы логированных пакетов",
+  "text.config.firewall-config.category.loggedPacketIdentifiers.tooltip": "Какие пакеты должны быть логированы - вне зависимости от того, отторжены они или нет.",
+  "text.config.firewall-config.option.loggedPacketIdentifiers.comm": "Все",
+  "text.config.firewall-config.option.loggedPacketIdentifiers.send": "Отправляемые",
+  "text.config.firewall-config.option.loggedPacketIdentifiers.recv": "Получаемые",
+
+  "text.config.firewall-config.category.loggedCustomPayloadIdentifiers": "Идентификаторы логированных кастомных пакетов",
+  "text.config.firewall-config.category.loggedCustomPayloadIdentifiers.tooltip": "Какие кастомные пакеты должны быть логированы - вне зависимости от того, отторжены они или нет.",
+  "text.config.firewall-config.option.loggedCustomPayloadIdentifiers.comm": "Все",
+  "text.config.firewall-config.option.loggedCustomPayloadIdentifiers.send": "Отправляемые",
+  "text.config.firewall-config.option.loggedCustomPayloadIdentifiers.recv": "Получаемые"
 }

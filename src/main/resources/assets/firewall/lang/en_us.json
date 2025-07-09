@@ -33,5 +33,17 @@
   "text.config.firewall-config.option.shouldOverwriteBrand": "Should overwrite the brand",
   "text.config.firewall-config.option.brandBehavior.tooltip": "The brand packet tells the server what client you're using, like 'vanilla', 'fabric', etc.",
   "text.config.firewall-config.option.brandOverwriteValue": "Brand overwrite value",
-  "text.config.firewall-config.option.brandOverwriteValue.tooltip": "'vanilla', 'fabric' or anything else. Used only if the brand overwrite is enabled."
+  "text.config.firewall-config.option.brandOverwriteValue.tooltip": "'vanilla', 'fabric' or anything else. Used only if the brand overwrite is enabled.",
+
+  "text.config.firewall-config.category.loggedPacketIdentifiers": "Identifiers of logged packets",
+  "text.config.firewall-config.category.loggedPacketIdentifiers.tooltip": "What packets should be logged - regardless of if they're rejected or not.",
+  "text.config.firewall-config.option.loggedPacketIdentifiers.comm": "All",
+  "text.config.firewall-config.option.loggedPacketIdentifiers.send": "Send",
+  "text.config.firewall-config.option.loggedPacketIdentifiers.recv": "Receive",
+
+  "text.config.firewall-config.category.loggedCustomPayloadIdentifiers": "Identifiers of logged custom payloads",
+  "text.config.firewall-config.category.loggedCustomPayloadIdentifiers.tooltip": "What custom payloads should be logged - regardless of if they're rejected or not.",
+  "text.config.firewall-config.option.loggedCustomPayloadIdentifiers.comm": "All",
+  "text.config.firewall-config.option.loggedCustomPayloadIdentifiers.send": "Send",
+  "text.config.firewall-config.option.loggedCustomPayloadIdentifiers.recv": "Receive"
 }
