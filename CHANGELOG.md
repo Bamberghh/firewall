@@ -1,7 +1,3 @@
-### Changes
-
-- Add the "Send/Receive empty channel lists" options for the "Registered channel identifiers" option to not send the empty channel lists.
-
 ### Fixes
 
-- Fixed a typo in the translation.
+- Fixed the owo-lib in the dependencies of `fabric.mod.json` to hopefully make Modrinth and CurseForge correctly display it in the dependencies.
