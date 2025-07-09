@@ -30,6 +30,8 @@ jobs:
       - name: mc-publish
         uses: Kira-NT/mc-publish@v3.3.0
         with:
+          changelog-file: CHANGELOG.md
+
           modrinth-id: hxSZAaAL
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
@@ -37,3 +39,4 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-generate-changelog: true
