@@ -10,6 +10,8 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
+import net.minecraft.network.packet.s2c.login.LoginQueryRequestPayload;
+import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
@@ -85,16 +87,25 @@ public abstract class ClientConnectionMixin {
 				Firewall.LOGGER.info("{}: receive custom payload {}: {}", Firewall.MOD_ID, customPayloadId, payload);
 			}
 		}
+		else if (packet instanceof LoginQueryRequestS2CPacket(int queryId, LoginQueryRequestPayload queryPayload)) {
+			customPayloadId = queryPayload.id().toString();
+			if (Firewall.CONFIG.loggedCustomPayloadIdentifiers.recvMerged().accepts(customPayloadId)) {
+				Firewall.LOGGER.info("{}: receive custom query request {}", Firewall.MOD_ID, customPayloadId);
+			}
+		}
 		if (!Firewall.CONFIG.packetIdentifiers.recvMerged().accepts(packetId)) {
 			Firewall.LOGGER.info("{}: rejected received packet {}", Firewall.MOD_ID, packetId);
 			ci.cancel();
 			return;
 		}
-		if (payload == null) {
+		if (customPayloadId == null) {
 			return;
 		}
 		if (!Firewall.CONFIG.customPayloadIdentifiers.recvMerged().accepts(customPayloadId)) {
-			Firewall.LOGGER.info("{}: rejected received custom payload packet {}", Firewall.MOD_ID, customPayloadId);
+			Firewall.LOGGER.info("{}: rejected received custom {} packet {}",
+					Firewall.MOD_ID,
+					payload != null ? "payload" : "query request",
+					customPayloadId);
 			ci.cancel();
 			return;
 		}
