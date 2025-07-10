@@ -1,4 +1,4 @@
 ### Changes
 
-- Added the minecraft version to the resulting mod jar
-- Added the custom query request handler
+- Added the minecraft version to the resulting mod jar filename
+- Handle the custom query requests like custom payloads
