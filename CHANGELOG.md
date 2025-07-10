@@ -1,7 +1,3 @@
 ### Changes
 
-- Added packet logging options
-
-### Fixes
-
-- Fixed the custom payload receiving
+- Added the minecraft version to the resulting mod jar
