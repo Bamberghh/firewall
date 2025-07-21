@@ -2,12 +2,6 @@
   "required": true,
   "package": "me.bamberghh.firewall.mixin",
   "compatibilityLevel": "JAVA_21",
-  "client": [
-    "BrandCustomPayloadMixin",
-    "ClientConnectionMixin",
-    "RegistrationPayloadMixin",
-    "CommonRegisterPayloadMixin"
-  ],
   "injectors": {
     "defaultRequire": 1
   },
@@ -15,5 +9,9 @@
     "requireAnnotations": true
   },
   "mixins": [
+    "BrandCustomPayloadMixin",
+    "ClientConnectionMixin",
+    "RegistrationPayloadMixin",
+    "CommonRegisterPayloadMixin"
   ]
 }

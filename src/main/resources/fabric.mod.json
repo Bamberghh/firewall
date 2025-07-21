@@ -13,10 +13,13 @@
     },
     "license": "MIT",
     "icon": "assets/firewall/icon.png",
-    "environment": "client",
+    "environment": "*",
     "entrypoints": {
-        "client": [
+        "main": [
             "me.bamberghh.firewall.Firewall"
+        ],
+        "client": [
+            "me.bamberghh.firewall.FirewallClient"
         ]
     },
     "mixins": [
