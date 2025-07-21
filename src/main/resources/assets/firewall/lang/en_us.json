@@ -18,6 +18,8 @@
   "text.config.firewall-config.option.customPayloadIdentifiers.comm": "All",
   "text.config.firewall-config.option.customPayloadIdentifiers.send": "Send",
   "text.config.firewall-config.option.customPayloadIdentifiers.recv": "Receive",
+  "text.config.firewall-config.option.customPayloadIdentifiers.respondToRejectedQueryRequests": "Respond to rejected received query requests",
+  "text.config.firewall-config.option.customPayloadIdentifiers.respondToRejectedQueryRequests.tooltip": "Received query requests, aka login plugin requests or minecraft:custom_query,\nshould probably be responded to, as to not break the configuration phase.\n\nIf this is enabled, the rejected requests will be responded with a default, vanilla empty response.\n\nDon't recommend disabling this.",
 
   "text.config.firewall-config.category.registerIdentifiers": "Registered channel identifiers",
   "text.config.firewall-config.category.registerIdentifiers.tooltip": "Allowed channel identifiers in minecraft:register, minecraft:unregister\n(used by Bukkit, BungeeCord, Velocity and Fabric API)\nand c:register packets (used by FabricMC, NeoForged, PaperMC and SpongePowered team).",
