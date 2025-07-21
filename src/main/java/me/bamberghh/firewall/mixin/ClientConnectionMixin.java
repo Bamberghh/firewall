@@ -70,7 +70,7 @@ public abstract class ClientConnectionMixin {
 				? Firewall.CONFIG.sendMerged()
 				: Firewall.CONFIG.recvMerged();
 
-		String packetId = packet.getPacketType().id().toString();
+		String packetId = packet.getPacketId().id().toString();
 
 		if (config.loggedPacketIdentifiers().accepts(packetId)) {
 			Firewall.LOGGER.info("{}packet {}: {}", logPrefix, packetId, packet);
