@@ -67,14 +67,14 @@
   "text.config.firewall-config.option.packetIdentifiers.recv": "Получаемые",
 
   "text.config.firewall-config.category.customPayloadIdentifiers": "Идентификаторы кастомных пакетов",
-  "text.config.firewall-config.category.customPayloadIdentifiers.tooltip": "Клиенты, общающиеся с серверами, иногда используют кастомные пакеты, известные как custom payload и plugin channel.\nВот некоторые идентификаторы, подавление которых возможно пригодится:\n\nminecraft:brand: Пакет бренда, используется Ванильными и Модифицированными клиентами.\nminecraft:register: Сообщает получателю, какие каналы (кастомные пакеты) принимает отправитель.\nminecraft:unregister: Сообщает получателю, какие каналы отправитель теперь не принимает.\nvisiblebarriers:mod_installed: Мод Visible Barriers отправляет этот пакет серверу при входе на сервер.",
+  "text.config.firewall-config.category.customPayloadIdentifiers.tooltip": "Клиенты, общающиеся с серверами, иногда используют кастомные пакеты, известные как custom payload и plugin channel.\nВот некоторые идентификаторы, подавление которых возможно пригодится:\n\nminecraft:brand: Пакет бренда, используется Ванильными и Модифицированными клиентами.\nminecraft:register: Сообщает получателю, какие каналы (кастомные пакеты) принимает отправитель.\nminecraft:unregister: Сообщает получателю, какие каналы отправитель теперь не принимает.\nc:version: Часть стандарта \"Common\". Сообщает поддерживаемые версии стандарта, на данный момент только \"1\".\nc:register: Часть стандарта \"Common\". Служит той же цели, что и пакет minecraft:register.\nvisiblebarriers:mod_installed: Мод Visible Barriers отправляет этот пакет серверу при входе на сервер.",
   "text.config.firewall-config.option.customPayloadIdentifiers.useFromRegister": "Использовать из опции \"Идентификаторы регистрируемых пакетов\" ниже",
   "text.config.firewall-config.option.customPayloadIdentifiers.comm": "Все",
   "text.config.firewall-config.option.customPayloadIdentifiers.send": "Отправляемые",
   "text.config.firewall-config.option.customPayloadIdentifiers.recv": "Получаемые",
 
   "text.config.firewall-config.category.registerIdentifiers": "Идентификаторы регистрируемых каналов",
-  "text.config.firewall-config.category.registerIdentifiers.tooltip": "Разрешенные идентификаторы каналов в пакетах minecraft:register и minecraft:unregister,\nотправляемые Bukkit, BungeeCord, Velocity и Fabric API.",
+  "text.config.firewall-config.category.registerIdentifiers.tooltip": "Разрешенные идентификаторы каналов в пакетах minecraft:register, minecraft:unregister\n(используют Bukkit, BungeeCord, Velocity и Fabric API)\nи c:register (используют FabricMC, NeoForged, PaperMC и команда SpongePowered).",
   "text.config.firewall-config.option.registerIdentifiers.useFromCustomPayload": "Использовать из опции \"Идентификаторы кастомных пакетов\" выше",
   "text.config.firewall-config.option.registerIdentifiers.comm": "Все",
   "text.config.firewall-config.option.registerIdentifiers.sendEmptyChannelLists": "Отправлять пустые списки каналов",

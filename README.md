@@ -30,7 +30,7 @@ For a list of *some* of the identifiers see [the Minecraft Wiki article on plugi
 
 #### Registered channel identifiers
 
-Control which channel identifiers in minecraft:register and minecraft:unregister packets are allowed, sent by Bukkit, BungeeCord, Velocity and Fabric API.
+Control which channel identifiers in minecraft:register, minecraft:unregister (used by Bukkit, BungeeCord, Velocity and Fabric API) and c:register packets (used by FabricMC, NeoForged, PaperMC and SpongePowered team) are allowed.
 
 You can select the setting `Use from "Custom payload identifiers" option above` to also apply the filters from the respective option.
 
