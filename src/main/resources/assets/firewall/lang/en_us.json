@@ -13,14 +13,14 @@
   "text.config.firewall-config.option.packetIdentifiers.recv": "Receive",
 
   "text.config.firewall-config.category.customPayloadIdentifiers": "Custom payload identifiers",
-  "text.config.firewall-config.category.customPayloadIdentifiers.tooltip": "Clients communicating with servers sometimes use custom payload packets, aka plugin channels.\nHere are some identifiers of packets that may be worth suppressing:\n\nminecraft:brand: The brand packet, used by Vanilla and modded Minecraft clients.\nminecraft:register: Tells the receiver the custom channels that the sender can accept.\nminecraft:unregister: Tells the receiver the custom channels that the sender doesn't accept.\nvisiblebarriers:mod_installed: The Visible Barriers mod sends this packet on a server join.",
+  "text.config.firewall-config.category.customPayloadIdentifiers.tooltip": "Clients communicating with servers sometimes use custom payload packets, aka plugin channels.\nHere are some identifiers of packets that may be worth suppressing:\n\nminecraft:brand: The brand packet, used by Vanilla and modded Minecraft clients.\nminecraft:register: Tells the receiver the custom channels that the sender can accept.\nminecraft:unregister: Tells the receiver the custom channels that the sender doesn't accept.\nc:version: Part of the \"Common\" standard. Sends the supported versions of the standard, currently only \"1\".\nc:register: Part of the \"Common\" standard. Serves the same purpose as the minecraft:register packet.\nvisiblebarriers:mod_installed: The Visible Barriers mod sends this packet on a server join.",
   "text.config.firewall-config.option.customPayloadIdentifiers.useFromRegister": "Use from \"Registered channel identifiers\" below",
   "text.config.firewall-config.option.customPayloadIdentifiers.comm": "All",
   "text.config.firewall-config.option.customPayloadIdentifiers.send": "Send",
   "text.config.firewall-config.option.customPayloadIdentifiers.recv": "Receive",
 
   "text.config.firewall-config.category.registerIdentifiers": "Registered channel identifiers",
-  "text.config.firewall-config.category.registerIdentifiers.tooltip": "Allowed channel identifiers in minecraft:register and minecraft:unregister packets,\nsent by Bukkit, BungeeCord, Velocity and Fabric API.",
+  "text.config.firewall-config.category.registerIdentifiers.tooltip": "Allowed channel identifiers in minecraft:register, minecraft:unregister\n(used by Bukkit, BungeeCord, Velocity and Fabric API)\nand c:register packets (used by FabricMC, NeoForged, PaperMC and SpongePowered team).",
   "text.config.firewall-config.option.registerIdentifiers.useFromCustomPayload": "Use from \"Custom payload identifiers\" above",
   "text.config.firewall-config.option.registerIdentifiers.comm": "All",
   "text.config.firewall-config.option.registerIdentifiers.sendEmptyChannelLists": "Send empty channel lists",
