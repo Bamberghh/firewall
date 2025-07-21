@@ -49,8 +49,6 @@ dependencies {
 	annotationProcessor modImplementation("io.wispforest:owo-lib:${project.owo_version}")
 
 	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
-
-	modCompileOnly "maven.modrinth:visiblebarriers:${project.visiblebarriers_version}"
 }
 
 processResources {
