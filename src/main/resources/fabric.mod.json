@@ -1,36 +1,36 @@
 {
-	"schemaVersion": 1,
-	"id": "firewall",
-	"version": "${version}",
-	"name": "Firewall",
-	"description": "Filters sent/received packets",
-	"authors": [
-		"Bamberghh"
-	],
-	"contact": {
-		"homepage": "https://modrinth.com/mod/firewall",
-		"sources": "https://github.com/Bamberghh/firewall"
-	},
-	"license": "MIT",
-	"icon": "assets/firewall/icon.png",
-	"environment": "client",
-	"entrypoints": {
-		"client": [
-			"me.bamberghh.firewall.Firewall"
-		]
-	},
-	"mixins": [
-		"firewall.mixins.json"
-	],
-	"accessWidener": "firewall.accesswidener",
-	"depends": {
-		"fabricloader": ">=0.16.14",
-		"minecraft": "${minecraft_version}",
-		"java": ">=21",
-		"fabric-api": "*",
-		"owo-lib": "*"
-	},
-	"suggests": {
-		"modmenu": "*"
-	}
+    "schemaVersion": 1,
+    "id": "firewall",
+    "version": "${version}",
+    "name": "Firewall",
+    "description": "Filters sent/received packets",
+    "authors": [
+        "Bamberghh"
+    ],
+    "contact": {
+        "homepage": "https://modrinth.com/mod/firewall",
+        "sources": "https://github.com/Bamberghh/firewall"
+    },
+    "license": "MIT",
+    "icon": "assets/firewall/icon.png",
+    "environment": "client",
+    "entrypoints": {
+        "client": [
+            "me.bamberghh.firewall.Firewall"
+        ]
+    },
+    "mixins": [
+        "firewall.mixins.json"
+    ],
+    "accessWidener": "firewall.accesswidener",
+    "depends": {
+        "fabricloader": ">=0.16.14",
+        "minecraft": "${minecraft_version}",
+        "java": ">=21",
+        "fabric-api": "*",
+        "owo-lib": "*"
+    },
+    "suggests": {
+        "modmenu": "*"
+    }
 }

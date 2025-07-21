@@ -12,13 +12,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(BrandCustomPayload.class)
 public class BrandCustomPayloadMixin {
-	@Mutable
-	@Shadow @Final private String brand;
+    @Mutable
+    @Shadow @Final private String brand;
 
-	@Inject(at = @At("RETURN"), method = "<init>(Ljava/lang/String;)V")
-	private void init(String string, CallbackInfo ci) {
-		if (Firewall.CONFIG.shouldOverwriteBrand()) {
-			this.brand = Firewall.CONFIG.brandOverwriteValue();
-		}
-	}
+    @Inject(at = @At("RETURN"), method = "<init>(Ljava/lang/String;)V")
+    private void init(String string, CallbackInfo ci) {
+        if (Firewall.CONFIG.shouldOverwriteBrand()) {
+            this.brand = Firewall.CONFIG.brandOverwriteValue();
+        }
+    }
 }
