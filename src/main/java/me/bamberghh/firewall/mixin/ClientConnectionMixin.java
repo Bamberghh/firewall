@@ -33,7 +33,7 @@ public abstract class ClientConnectionMixin {
 
 	@Inject(method = "send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;Z)V", at = @At("HEAD"), cancellable = true)
 	private void send(Packet<?> packet, @Nullable PacketCallbacks callbacks, boolean flush, CallbackInfo ci) {
-		String packetId = packet.getPacketId().id().toString();
+		String packetId = packet.getPacketType().id().toString();
 		if (Firewall.CONFIG.loggedPacketIdentifiers.sendMerged().accepts(packetId)) {
 			Firewall.LOGGER.info("{}: send packet {}: {}", Firewall.MOD_ID, packetId, packet);
 		}
@@ -74,7 +74,7 @@ public abstract class ClientConnectionMixin {
 
 	@Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V", at = @At("HEAD"), cancellable = true)
 	protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet<?> packet, CallbackInfo ci) {
-		String packetId = packet.getPacketId().id().toString();
+		String packetId = packet.getPacketType().id().toString();
 		if (Firewall.CONFIG.loggedPacketIdentifiers.recvMerged().accepts(packetId)) {
 			Firewall.LOGGER.info("{}: receive packet {}: {}", Firewall.MOD_ID, packetId, packet);
 		}
