@@ -28,6 +28,8 @@ You can select the setting `Use from "Registered channel identifiers" option bel
 
 For a list of *some* of the identifiers see [the Minecraft Wiki article on plugin channels](https://minecraft.wiki/w/Java_Edition_protocol/Plugin_channels), or the respective mod/plugin documentation for the sent packets. Again, like the packet identifiers, don't forget the `minecraft:` or some other namespace.
 
+The `Respond to rejected received query requests` should probably be enabled, as to not break the handshaking flow.
+
 #### Registered channel identifiers
 
 Control which channel identifiers in minecraft:register, minecraft:unregister (used by Bukkit, BungeeCord, Velocity and Fabric API) and c:register packets (used by FabricMC, NeoForged, PaperMC and SpongePowered team) are allowed.

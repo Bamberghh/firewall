@@ -72,6 +72,8 @@
   "text.config.firewall-config.option.customPayloadIdentifiers.comm": "Все",
   "text.config.firewall-config.option.customPayloadIdentifiers.send": "Отправляемые",
   "text.config.firewall-config.option.customPayloadIdentifiers.recv": "Получаемые",
+  "text.config.firewall-config.option.customPayloadIdentifiers.respondToRejectedQueryRequests": "Отвечать отторженным получаемым запросам входа (query requests)",
+  "text.config.firewall-config.option.customPayloadIdentifiers.respondToRejectedQueryRequests.tooltip": "Получаемые запросы входа, также известные как login plugin requests или minecraft:custom_query,\nскорее всего должны быть отвечены, чтобы не ломать фазу конфигурации (логина/входа).\n\nЕсли эта опция включена, отторженные запросы будут отвечены стандартным ванильным пустым пакетом.\n\nНе рекомендую выключать эту опцию.",
 
   "text.config.firewall-config.category.registerIdentifiers": "Идентификаторы регистрируемых каналов",
   "text.config.firewall-config.category.registerIdentifiers.tooltip": "Разрешенные идентификаторы каналов в пакетах minecraft:register, minecraft:unregister\n(используют Bukkit, BungeeCord, Velocity и Fabric API)\nи c:register (используют FabricMC, NeoForged, PaperMC и команда SpongePowered).",
