@@ -1,4 +1,8 @@
 ### Changes
 
-- Added the minecraft version to the resulting mod jar filename
-- Handle the custom query requests like custom payloads
+- Better, more readable logging
+- Respond to rejected received query requests by default
+
+### Fixes
+
+- Handle the c:register custom payload like the other registration payloads (minecraft:(un)register)
