@@ -2,7 +2,9 @@ package me.bamberghh.firewall.mixin;
 
 import io.netty.channel.ChannelHandlerContext;
 import me.bamberghh.firewall.Firewall;
+import me.bamberghh.firewall.util.RegisterPayloadCommonInterface;
 import me.bamberghh.firewall.util.StringFilter;
+import net.fabricmc.fabric.impl.networking.CommonRegisterPayload;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketCallbacks;
@@ -22,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,14 +64,22 @@ public abstract class ClientConnectionMixin {
 			ci.cancel();
 			return;
 		}
-        if (!(payload instanceof RegistrationPayload registration)) {
-			return;
+		RegisterPayloadCommonInterface registerCommon = null;
+		if (payload instanceof RegistrationPayload registration) {
+			registerCommon = (RegisterPayloadCommonInterface) (Object) registration;
 		}
-		var sendMerged = Firewall.CONFIG.registerIdentifiers.sendMerged();
-		boolean cancel = modifyRegistrationPayload(false, sendMerged, registration);
-		if (cancel) {
-			onSendCancel(flush, callbacks);
-			ci.cancel();
+		else if (payload instanceof CommonRegisterPayload register) {
+			registerCommon = (RegisterPayloadCommonInterface) (Object) register;
+		}
+		// For some reason IntelliJ says that registerCommon is always null, but that's a false positive.
+        //noinspection ConstantValue
+        if (registerCommon != null) {
+			var sendMerged = Firewall.CONFIG.registerIdentifiers.sendMerged();
+			boolean cancel = modifyRegistrationPayload(false, sendMerged, registerCommon);
+			if (cancel) {
+				onSendCancel(flush, callbacks);
+				ci.cancel();
+			}
 		}
 	}
 
@@ -109,13 +120,21 @@ public abstract class ClientConnectionMixin {
 			ci.cancel();
 			return;
 		}
-		if (!(payload instanceof RegistrationPayload registration)) {
-			return;
+		RegisterPayloadCommonInterface registerCommon = null;
+		if (payload instanceof RegistrationPayload registration) {
+			registerCommon = (RegisterPayloadCommonInterface) (Object) registration;
 		}
-		var recvMerged = Firewall.CONFIG.registerIdentifiers.recvMerged();
-		boolean cancel = modifyRegistrationPayload(true, recvMerged, registration);
-		if (cancel) {
-			ci.cancel();
+		else if (payload instanceof CommonRegisterPayload register) {
+			registerCommon = (RegisterPayloadCommonInterface) (Object) register;
+		}
+		// For some reason IntelliJ says that registerCommon is always null, but that's a false positive.
+		//noinspection ConstantValue
+		if (registerCommon != null) {
+			var recvMerged = Firewall.CONFIG.registerIdentifiers.recvMerged();
+			boolean cancel = modifyRegistrationPayload(true, recvMerged, registerCommon);
+			if (cancel) {
+				ci.cancel();
+			}
 		}
 	}
 
@@ -131,7 +150,7 @@ public abstract class ClientConnectionMixin {
 	}
 
 	@Unique
-	private static Pair<List<Identifier>, List<Identifier>> partitionChannels(List<Identifier> channels, StringFilter filter) {
+	private static Pair<Collection<Identifier>, Collection<Identifier>> partitionChannels(Collection<Identifier> channels, StringFilter filter) {
 		if (filter.acceptsNothing()) {
 			return Pair.of(channels, Collections.emptyList());
 		}
@@ -145,8 +164,8 @@ public abstract class ClientConnectionMixin {
 	}
 
 	@Unique
-	private static boolean modifyRegistrationPayload(boolean recv, StringFilter filter, RegistrationPayload registration) {
-		var partitionedChannels = partitionChannels(registration.channels(), filter);
+	private static boolean modifyRegistrationPayload(boolean recv, StringFilter filter, RegisterPayloadCommonInterface payload) {
+		var partitionedChannels = partitionChannels(payload.firewall$channelsCollection(), filter);
 		var rejectedChannels = partitionedChannels.getLeft();
 		var acceptedChannels = partitionedChannels.getRight();
 		boolean cancel =
@@ -155,12 +174,12 @@ public abstract class ClientConnectionMixin {
 						? !Firewall.CONFIG.registerIdentifiers.recvEmptyChannelLists()
 						: !Firewall.CONFIG.registerIdentifiers.sendEmptyChannelLists());
 		if (!rejectedChannels.isEmpty()) {
-			((RegistrationPayloadMixin) (Object) registration).setChannels(acceptedChannels);
+			payload.firewall$setChannelsCollection(acceptedChannels);
 			Firewall.LOGGER.info("{}: filtered{} {} {} packet channels: rejected: {} ({}); accepted: {} ({})",
 					Firewall.MOD_ID,
 					cancel ? " & rejected" : "",
 					recv ? "received" : "sent",
-					registration.id().id(),
+					payload.getId().id(),
 					rejectedChannels, rejectedChannels.size(),
 					acceptedChannels, acceptedChannels.size());
 		}
