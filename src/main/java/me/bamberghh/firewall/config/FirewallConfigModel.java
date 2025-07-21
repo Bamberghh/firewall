@@ -61,6 +61,7 @@ public class FirewallConfigModel {
         public SimpleStringFilter comm = SimpleStringFilter.blacklist();
         public SimpleStringFilter send = SimpleStringFilter.blacklist();
         public SimpleStringFilter recv = SimpleStringFilter.blacklist();
+        public boolean respondToRejectedQueryRequests = true;
 
         @Computed(inputs = {"comm", "send", "useFromRegister", "/registerIdentifiers/comm", "/registerIdentifiers/send"}, output = MergeFiltersWithBool.class)
         public transient StringFilter sendMerged = null;
@@ -95,6 +96,47 @@ public class FirewallConfigModel {
             SimpleStringFilter.whitelist(),
             SimpleStringFilter.blacklist(),
             SimpleStringFilter.blacklist());
+
+
+    public record SidedConfig(
+            StringFilter packetIdentifiers,
+            StringFilter customPayloadIdentifiers,
+            StringFilter registerIdentifiers,
+            boolean registerIdentifiersAcceptEmptyChannelLists,
+            StringFilter loggedPacketIdentifiers,
+            StringFilter loggedCustomPayloadIdentifiers)
+    { }
+    private static class MergeSidedConfig implements Function<Object[], Object> {
+        @Override
+        public Object apply(Object[] objects) {
+            assert objects.length == 6;
+            return new SidedConfig(
+                    (StringFilter) objects[0],
+                    (StringFilter) objects[1],
+                    (StringFilter) objects[2],
+                         (boolean) objects[3],
+                    (StringFilter) objects[4],
+                    (StringFilter) objects[5]);
+        }
+    }
+    @Computed(inputs = {
+                         "/packetIdentifiers/sendMerged",
+                  "/customPayloadIdentifiers/sendMerged",
+                       "/registerIdentifiers/sendMerged",
+                       "/registerIdentifiers/sendEmptyChannelLists",
+                   "/loggedPacketIdentifiers/sendMerged",
+            "/loggedCustomPayloadIdentifiers/sendMerged",
+    }, output = MergeSidedConfig.class)
+    public transient SidedConfig sendMerged;
+    @Computed(inputs = {
+                         "/packetIdentifiers/recvMerged",
+                  "/customPayloadIdentifiers/recvMerged",
+                       "/registerIdentifiers/recvMerged",
+                       "/registerIdentifiers/recvEmptyChannelLists",
+                   "/loggedPacketIdentifiers/recvMerged",
+            "/loggedCustomPayloadIdentifiers/recvMerged",
+    }, output = MergeSidedConfig.class)
+    public transient SidedConfig recvMerged;
 
     public static void builderConsumer(ConfigWrapper.SerializationBuilder builder) {
         builder.addEndec(Pattern.class, Endec.STRING.xmap(
