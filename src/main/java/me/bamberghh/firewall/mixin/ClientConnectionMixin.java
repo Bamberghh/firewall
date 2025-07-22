@@ -1,5 +1,7 @@
 package me.bamberghh.firewall.mixin;
 
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import me.bamberghh.firewall.Firewall;
 import me.bamberghh.firewall.config.FirewallConfigModel;
@@ -48,11 +50,13 @@ public abstract class ClientConnectionMixin {
 
     @Shadow public abstract void send(Packet<?> packet);
 
+    @Shadow private Channel channel;
+
     @Unique
     private void handlePacket(
             boolean send,
             Packet<?> packet,
-            @Nullable PacketCallbacks callbacks,
+            @Nullable ChannelFutureListener channelFutureListener,
             boolean flush,
             CallbackInfo ci)
     {
@@ -101,7 +105,7 @@ public abstract class ClientConnectionMixin {
 
         if (!config.packetIdentifiers().accepts(packetId)) {
             Firewall.LOGGER.info("{}rejected packet {}", logPrefix, packetId);
-            if (send) onSendCancel(flush, callbacks);
+            if (send) onSendCancel(flush, channelFutureListener);
             else onRecvCancel(queryRequestId);
             ci.cancel();
             return;
@@ -111,7 +115,7 @@ public abstract class ClientConnectionMixin {
         }
         if (!config.customPayloadIdentifiers().accepts(customPayloadId)) {
             Firewall.LOGGER.info("{}rejected custom payload packet {}", logPrefix, customPayloadId);
-            if (send) onSendCancel(flush, callbacks);
+            if (send) onSendCancel(flush, channelFutureListener);
             else onRecvCancel(queryRequestId);
             ci.cancel();
             return;
@@ -146,7 +150,7 @@ public abstract class ClientConnectionMixin {
                         acceptedChannels, acceptedChannels.size());
             }
             if (cancel) {
-                if (send) onSendCancel(flush, callbacks);
+                if (send) onSendCancel(flush, channelFutureListener);
                 else onRecvCancel(queryRequestId);
                 ci.cancel();
             }
@@ -154,13 +158,13 @@ public abstract class ClientConnectionMixin {
     }
 
     @Unique
-    private void onSendCancel(boolean flush, @Nullable PacketCallbacks callbacks) {
+    private void onSendCancel(boolean flush, @Nullable ChannelFutureListener channelFutureListener) {
         // Mimic the normal sending behavior when rejecting a packet (cancelling CallbackInfo)
         if (flush) {
             flush();
         }
-        if (callbacks != null) {
-            callbacks.onSuccess();
+        if (channelFutureListener != null) {
+            channel.newSucceededFuture().addListener(channelFutureListener);
         }
     }
 
@@ -212,9 +216,9 @@ public abstract class ClientConnectionMixin {
         return cancel;
     }
 
-    @Inject(method = "send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;Z)V", at = @At("HEAD"), cancellable = true)
-    private void send(Packet<?> packet, @Nullable PacketCallbacks callbacks, boolean flush, CallbackInfo ci) {
-        handlePacket(true, packet, callbacks, flush, ci);
+    @Inject(method = "send(Lnet/minecraft/network/packet/Packet;Lio/netty/channel/ChannelFutureListener;Z)V", at = @At("HEAD"), cancellable = true)
+    private void send(Packet<?> packet, @Nullable ChannelFutureListener channelFutureListener, boolean flush, CallbackInfo ci) {
+        handlePacket(true, packet, channelFutureListener, flush, ci);
     }
 
     @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V", at = @At("HEAD"), cancellable = true)
