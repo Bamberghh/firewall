@@ -11,7 +11,6 @@ import net.fabricmc.fabric.impl.networking.CommonRegisterPayload;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
-import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
@@ -105,7 +104,7 @@ public abstract class ClientConnectionMixin {
 
         if (!config.packetIdentifiers().accepts(packetId)) {
             Firewall.LOGGER.info("{}rejected packet {}", logPrefix, packetId);
-            if (send) onSendCancel(flush, channelFutureListener);
+            if (send) onSendCancel(channelFutureListener, flush);
             else onRecvCancel(queryRequestId);
             ci.cancel();
             return;
@@ -115,7 +114,7 @@ public abstract class ClientConnectionMixin {
         }
         if (!config.customPayloadIdentifiers().accepts(customPayloadId)) {
             Firewall.LOGGER.info("{}rejected custom payload packet {}", logPrefix, customPayloadId);
-            if (send) onSendCancel(flush, channelFutureListener);
+            if (send) onSendCancel(channelFutureListener, flush);
             else onRecvCancel(queryRequestId);
             ci.cancel();
             return;
@@ -150,7 +149,7 @@ public abstract class ClientConnectionMixin {
                         acceptedChannels, acceptedChannels.size());
             }
             if (cancel) {
-                if (send) onSendCancel(flush, channelFutureListener);
+                if (send) onSendCancel(channelFutureListener, flush);
                 else onRecvCancel(queryRequestId);
                 ci.cancel();
             }
@@ -158,13 +157,13 @@ public abstract class ClientConnectionMixin {
     }
 
     @Unique
-    private void onSendCancel(boolean flush, @Nullable ChannelFutureListener channelFutureListener) {
+    private void onSendCancel(@Nullable ChannelFutureListener channelFutureListener, boolean flush) {
         // Mimic the normal sending behavior when rejecting a packet (cancelling CallbackInfo)
-        if (flush) {
-            flush();
-        }
         if (channelFutureListener != null) {
             channel.newSucceededFuture().addListener(channelFutureListener);
+        }
+        if (flush) {
+            channel.flush();
         }
     }
 
@@ -216,8 +215,8 @@ public abstract class ClientConnectionMixin {
         return cancel;
     }
 
-    @Inject(method = "send(Lnet/minecraft/network/packet/Packet;Lio/netty/channel/ChannelFutureListener;Z)V", at = @At("HEAD"), cancellable = true)
-    private void send(Packet<?> packet, @Nullable ChannelFutureListener channelFutureListener, boolean flush, CallbackInfo ci) {
+    @Inject(method = "sendInternal", at = @At("HEAD"), cancellable = true)
+    private void sendInternal(Packet<?> packet, @Nullable ChannelFutureListener channelFutureListener, boolean flush, CallbackInfo ci) {
         handlePacket(true, packet, channelFutureListener, flush, ci);
     }
 
