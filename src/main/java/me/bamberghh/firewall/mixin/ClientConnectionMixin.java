@@ -1,5 +1,6 @@
 package me.bamberghh.firewall.mixin;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import me.bamberghh.firewall.Firewall;
 import me.bamberghh.firewall.config.FirewallConfigModel;
@@ -47,6 +48,8 @@ public abstract class ClientConnectionMixin {
     @Shadow protected abstract void channelRead0(ChannelHandlerContext channelHandlerContext, Packet<?> packet);
 
     @Shadow public abstract void send(Packet<?> packet);
+
+    @Shadow private Channel channel;
 
     @Unique
     private void handlePacket(
@@ -101,7 +104,7 @@ public abstract class ClientConnectionMixin {
 
         if (!config.packetIdentifiers().accepts(packetId)) {
             Firewall.LOGGER.info("{}rejected packet {}", logPrefix, packetId);
-            if (send) onSendCancel(flush, callbacks);
+            if (send) onSendCancel(callbacks, flush);
             else onRecvCancel(queryRequestId);
             ci.cancel();
             return;
@@ -111,7 +114,7 @@ public abstract class ClientConnectionMixin {
         }
         if (!config.customPayloadIdentifiers().accepts(customPayloadId)) {
             Firewall.LOGGER.info("{}rejected custom payload packet {}", logPrefix, customPayloadId);
-            if (send) onSendCancel(flush, callbacks);
+            if (send) onSendCancel(callbacks, flush);
             else onRecvCancel(queryRequestId);
             ci.cancel();
             return;
@@ -146,7 +149,7 @@ public abstract class ClientConnectionMixin {
                         acceptedChannels, acceptedChannels.size());
             }
             if (cancel) {
-                if (send) onSendCancel(flush, callbacks);
+                if (send) onSendCancel(callbacks, flush);
                 else onRecvCancel(queryRequestId);
                 ci.cancel();
             }
@@ -154,13 +157,13 @@ public abstract class ClientConnectionMixin {
     }
 
     @Unique
-    private void onSendCancel(boolean flush, @Nullable PacketCallbacks callbacks) {
+    private void onSendCancel(@Nullable PacketCallbacks callbacks, boolean flush) {
         // Mimic the normal sending behavior when rejecting a packet (cancelling CallbackInfo)
-        if (flush) {
-            flush();
-        }
         if (callbacks != null) {
             callbacks.onSuccess();
+        }
+        if (flush) {
+            channel.flush();
         }
     }
 
@@ -191,29 +194,8 @@ public abstract class ClientConnectionMixin {
         return Pair.of(partitionedChannels.get(false), partitionedChannels.get(true));
     }
 
-    @Unique
-    private static boolean modifyRegistrationPayload(String logPrefix, boolean send, StringFilter filter, RegisterPayloadCommonInterface payload) {
-        var partitionedChannels = partitionChannels(payload.firewall$channelsCollection(), filter);
-        var rejectedChannels = partitionedChannels.getLeft();
-        var acceptedChannels = partitionedChannels.getRight();
-        boolean cancel =
-                acceptedChannels.isEmpty()
-                        && (!send
-                        ? !Firewall.CONFIG.registerIdentifiers.recvEmptyChannelLists()
-                        : !Firewall.CONFIG.registerIdentifiers.sendEmptyChannelLists());
-        if (!rejectedChannels.isEmpty()) {
-            payload.firewall$setChannelsCollection(acceptedChannels);
-            Firewall.LOGGER.info("{}filtered{} {} packet channels: rejected: {} ({}); accepted: {} ({})", logPrefix,
-                    cancel ? " & rejected" : "",
-                    payload.getId().id(),
-                    rejectedChannels, rejectedChannels.size(),
-                    acceptedChannels, acceptedChannels.size());
-        }
-        return cancel;
-    }
-
-    @Inject(method = "send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;Z)V", at = @At("HEAD"), cancellable = true)
-    private void send(Packet<?> packet, @Nullable PacketCallbacks callbacks, boolean flush, CallbackInfo ci) {
+    @Inject(method = "sendInternal", at = @At("HEAD"), cancellable = true)
+    private void sendInternal(Packet<?> packet, @Nullable PacketCallbacks callbacks, boolean flush, CallbackInfo ci) {
         handlePacket(true, packet, callbacks, flush, ci);
     }
 
