@@ -1,3 +1,3 @@
-### Changes
+### Fixes
 
-- Make the mod work on all sides instead of client-side
+- Handle sent packets a bit more correctly
