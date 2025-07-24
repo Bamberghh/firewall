@@ -1,7 +1,10 @@
 package me.bamberghh.firewall.config;
 
+import blue.endless.jankson.Jankson;
+import blue.endless.jankson.JsonElement;
 import io.wispforest.endec.Endec;
-import io.wispforest.owo.config.ConfigWrapper;
+import io.wispforest.endec.format.jankson.JanksonDeserializer;
+import io.wispforest.endec.format.jankson.JanksonSerializer;
 import io.wispforest.owo.config.annotation.Config;
 import io.wispforest.owo.config.annotation.Nest;
 import me.bamberghh.firewall.config.annotation.Computed;
@@ -138,9 +141,14 @@ public class FirewallConfigModel {
     }, output = MergeSidedConfig.class)
     public transient SidedConfig recvMerged;
 
-    public static void builderConsumer(ConfigWrapper.SerializationBuilder builder) {
-        builder.addEndec(Pattern.class, Endec.STRING.xmap(
+    public static void builderConsumer(Jankson.Builder janksonBuilder) {
+        var endec = Endec.STRING.xmap(
                 Pattern::compile,
-                Pattern::pattern));
+                Pattern::pattern);
+        // Copied from 1.21.2 io.wispforest.owo.config.ConfigWrapper.SerializationBuilder::addEndec.
+        // Note that the mod's options aren't synced so we don't have to modify it in the wrapper.
+        janksonBuilder
+                .registerSerializer(Pattern.class, (t, marshaller) -> endec.encodeFully(JanksonSerializer::of, t))
+                .registerDeserializer(JsonElement.class, Pattern.class, (element, marshaller) -> endec.decodeFully(JanksonDeserializer::of, element));
     }
 }
