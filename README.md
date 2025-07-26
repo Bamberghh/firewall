@@ -1,3 +1,7 @@
+[![Modrinth](https://img.shields.io/modrinth/v/hxSZAaAL?style=for-the-badge&logo=modrinth&logoColor=%231bd96a&label=Modrinth&color=%231bd96a
+)](https://modrinth.com/mod/hxSZAaAL)
+[![CurseForge](https://img.shields.io/curseforge/v/1302854?style=for-the-badge&logo=curseforge&logoColor=%23ff784d&label=CurseForge&color=%23ff784d&link=https%3A%2F%2Flegacy.curseforge.com%2Fminecraft%2Fmc-mods%2Ffirewall)](https://legacy.curseforge.com/minecraft/mc-mods/firewall)
+
 This is a Minecraft Fabric mod that allows you to configure what packets are sent/received.
 
 ### Installation
