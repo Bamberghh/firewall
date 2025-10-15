@@ -60,7 +60,7 @@ public class SetOptionContainer<T> extends CollapsibleContainer implements Optio
 
                 label.mouseEnter().subscribe(() -> label.text(label.text().copy().styled(style -> style.withColor(Formatting.YELLOW))));
                 label.mouseLeave().subscribe(() -> label.text(label.text().copy().styled(style -> style.withColor(Formatting.GRAY))));
-                label.mouseDown().subscribe((mouseX, mouseY, button) -> {
+                label.mouseDown().subscribe((click, doubled) -> {
                     UISounds.playInteractionSound();
                     this.backingList.add((T) "");
                     backingSetMarkDirty();
@@ -134,7 +134,7 @@ public class SetOptionContainer<T> extends CollapsibleContainer implements Optio
                 label.cursorStyle(CursorStyle.HAND);
                 label.mouseEnter().subscribe(() -> label.text(TextOps.withFormatting("x ", Formatting.GRAY)));
                 label.mouseLeave().subscribe(() -> label.text(TextOps.withFormatting("- ", Formatting.GRAY)));
-                label.mouseDown().subscribe((mouseX, mouseY, button) -> {
+                label.mouseDown().subscribe((click, doubled) -> {
                     this.backingList.remove(optionIndex);
                     backingSetMarkDirty();
                     this.refreshResetButton();

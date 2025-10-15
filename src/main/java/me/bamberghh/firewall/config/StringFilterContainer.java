@@ -14,7 +14,9 @@ import io.wispforest.owo.util.Observable;
 import me.bamberghh.firewall.Firewall;
 import me.bamberghh.firewall.util.IndexHashSet;
 import me.bamberghh.firewall.util.SimpleStringFilter;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.Click;
+import net.minecraft.client.input.AbstractInput;
+import net.minecraft.client.input.MouseInput;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -41,14 +43,14 @@ public class StringFilterContainer extends CollapsibleContainer implements Optio
         }
 
         @Override
-        public boolean onMouseDown(double mouseX, double mouseY, int button) {
-            this.wasRightClicked = button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
-            return super.onMouseDown(mouseX, mouseY, button);
+        public boolean onMouseDown(Click click, boolean doubled) {
+            this.wasRightClicked = click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+            return super.onMouseDown(click, doubled);
         }
 
         @Override
-        public void onPress() {
-            if (this.wasRightClicked || Screen.hasShiftDown()) {
+        public void onPress(AbstractInput input) {
+            if (this.wasRightClicked || input.hasShift()) {
                 this.selectedIndex--;
                 if (this.selectedIndex < 0) this.selectedIndex += this.backingValues.length;
             } else {
@@ -58,12 +60,12 @@ public class StringFilterContainer extends CollapsibleContainer implements Optio
 
             this.updateMessage();
 
-            super.onPress();
+            super.onPress(input);
         }
 
         @Override
-        protected boolean isValidClickButton(int button) {
-            return button == GLFW.GLFW_MOUSE_BUTTON_RIGHT || super.isValidClickButton(button);
+        protected boolean isValidClickButton(MouseInput input) {
+            return input.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT || super.isValidClickButton(input);
         }
 
         protected void updateMessage() {
