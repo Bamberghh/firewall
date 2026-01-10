@@ -6,6 +6,9 @@
 
   "text.config.firewall-config.title": "Firewall configuration",
 
+  "text.config.firewall-config.option.isEnabled": "Enabled",
+  "text.config.firewall-config.option.isEnabled.tooltip": "General mod toggle. Can be toggled via Key Binds.",
+
   "text.config.firewall-config.category.packetIdentifiers": "Packet identifiers",
   "text.config.firewall-config.category.packetIdentifiers.tooltip": "Allowed packet resource identifiers - see https://minecraft.wiki/w/Java_Edition_protocol/Packets",
   "text.config.firewall-config.option.packetIdentifiers.comm": "All",
@@ -37,15 +40,32 @@
   "text.config.firewall-config.option.brandOverwriteValue": "Brand overwrite value",
   "text.config.firewall-config.option.brandOverwriteValue.tooltip": "'vanilla', 'fabric' or anything else. Used only if the brand overwrite is enabled.",
 
-  "text.config.firewall-config.category.loggedPacketIdentifiers": "Identifiers of logged packets",
-  "text.config.firewall-config.category.loggedPacketIdentifiers.tooltip": "What packets should be logged - regardless of if they're rejected or not.",
-  "text.config.firewall-config.option.loggedPacketIdentifiers.comm": "All",
-  "text.config.firewall-config.option.loggedPacketIdentifiers.send": "Send",
-  "text.config.firewall-config.option.loggedPacketIdentifiers.recv": "Receive",
+  "text.config.firewall-config.category.logging": "Logging",
+  "text.config.firewall-config.option.logging.isEnabled": "Enabled",
+  "text.config.firewall-config.option.logging.isEnabled.tooltip": "Logging toggle. Can be toggled via Key Binds.",
 
-  "text.config.firewall-config.category.loggedCustomPayloadIdentifiers": "Identifiers of logged custom payloads",
-  "text.config.firewall-config.category.loggedCustomPayloadIdentifiers.tooltip": "What custom payloads should be logged - regardless of if they're rejected or not.",
-  "text.config.firewall-config.option.loggedCustomPayloadIdentifiers.comm": "All",
-  "text.config.firewall-config.option.loggedCustomPayloadIdentifiers.send": "Send",
-  "text.config.firewall-config.option.loggedCustomPayloadIdentifiers.recv": "Receive"
+  "text.config.firewall-config.category.logging.loggedPacketIdentifiers": "Identifiers of logged packets",
+  "text.config.firewall-config.category.logging.loggedPacketIdentifiers.tooltip": "What packets should be logged - regardless of if they're rejected or not.",
+  "text.config.firewall-config.option.logging.loggedPacketIdentifiers.comm": "All",
+  "text.config.firewall-config.option.logging.loggedPacketIdentifiers.send": "Send",
+  "text.config.firewall-config.option.logging.loggedPacketIdentifiers.recv": "Receive",
+
+  "text.config.firewall-config.category.logging.loggedCustomPayloadIdentifiers": "Identifiers of logged custom payloads",
+  "text.config.firewall-config.category.logging.loggedCustomPayloadIdentifiers.tooltip": "What custom payloads should be logged - regardless of if they're rejected or not.",
+  "text.config.firewall-config.option.logging.loggedCustomPayloadIdentifiers.comm": "All",
+  "text.config.firewall-config.option.logging.loggedCustomPayloadIdentifiers.send": "Send",
+  "text.config.firewall-config.option.logging.loggedCustomPayloadIdentifiers.recv": "Receive",
+
+
+
+  "key.category.firewall.main": "Firewall",
+  "key.firewall.toggleEnabled": "Toggle mod",
+  "key.firewall.toggleLoggingEnabled": "Toggle logging",
+
+
+
+  "firewall.status.enabled": "Enabled Firewall",
+  "firewall.status.disabled": "Disabled Firewall",
+  "firewall.status.logging.enabled": "Enabled Firewall Logging",
+  "firewall.status.logging.disabled": "Disabled Firewall Logging"
 }

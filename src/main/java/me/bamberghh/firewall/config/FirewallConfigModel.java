@@ -84,6 +84,20 @@ public class FirewallConfigModel {
         @Computed(inputs = {"comm", "recv", "useFromCustomPayload", "/customPayloadIdentifiers/comm", "/customPayloadIdentifiers/recv"}, output = MergeFiltersWithBool.class)
         public transient StringFilter recvMerged = null;
     }
+    public static class Logging {
+        public boolean isEnabled = true;
+        @Nest public SendRecvStringFilter loggedPacketIdentifiers = new SendRecvStringFilter(
+                SimpleStringFilter.whitelist(),
+                SimpleStringFilter.blacklist(),
+                SimpleStringFilter.blacklist());
+        @Nest public SendRecvStringFilter loggedCustomPayloadIdentifiers = new SendRecvStringFilter(
+                SimpleStringFilter.whitelist(),
+                SimpleStringFilter.blacklist(),
+                SimpleStringFilter.blacklist());
+    }
+
+    public boolean isEnabled = true;
+
     @Nest public SendRecvStringFilter packetIdentifiers = new SendRecvStringFilter();
     @Nest public CustomPayloadIdentifiers customPayloadIdentifiers = new CustomPayloadIdentifiers();
     @Nest public RegisterIdentifiers registerIdentifiers = new RegisterIdentifiers();
@@ -91,15 +105,7 @@ public class FirewallConfigModel {
     public boolean shouldOverwriteBrand = false;
     public String brandOverwriteValue = "vanilla";
 
-    @Nest public SendRecvStringFilter loggedPacketIdentifiers = new SendRecvStringFilter(
-            SimpleStringFilter.whitelist(),
-            SimpleStringFilter.blacklist(),
-            SimpleStringFilter.blacklist());
-    @Nest public SendRecvStringFilter loggedCustomPayloadIdentifiers = new SendRecvStringFilter(
-            SimpleStringFilter.whitelist(),
-            SimpleStringFilter.blacklist(),
-            SimpleStringFilter.blacklist());
-
+    @Nest public Logging logging = new Logging();
 
     public record SidedConfig(
             StringFilter packetIdentifiers,
@@ -127,8 +133,8 @@ public class FirewallConfigModel {
                   "/customPayloadIdentifiers/sendMerged",
                        "/registerIdentifiers/sendMerged",
                        "/registerIdentifiers/sendEmptyChannelLists",
-                   "/loggedPacketIdentifiers/sendMerged",
-            "/loggedCustomPayloadIdentifiers/sendMerged",
+                   "logging/loggedPacketIdentifiers/sendMerged",
+            "logging/loggedCustomPayloadIdentifiers/sendMerged",
     }, output = MergeSidedConfig.class)
     public transient SidedConfig sendMerged;
     @Computed(inputs = {
@@ -136,8 +142,8 @@ public class FirewallConfigModel {
                   "/customPayloadIdentifiers/recvMerged",
                        "/registerIdentifiers/recvMerged",
                        "/registerIdentifiers/recvEmptyChannelLists",
-                   "/loggedPacketIdentifiers/recvMerged",
-            "/loggedCustomPayloadIdentifiers/recvMerged",
+                   "logging/loggedPacketIdentifiers/recvMerged",
+            "logging/loggedCustomPayloadIdentifiers/recvMerged",
     }, output = MergeSidedConfig.class)
     public transient SidedConfig recvMerged;
 
