@@ -60,6 +60,9 @@
 
   "text.config.firewall-config.title": "Настройка Firewall",
 
+  "text.config.firewall-config.option.isEnabled": "Включен",
+  "text.config.firewall-config.option.isEnabled.tooltip": "Включение/выключение всего мода. Можно переключить через Назначение клавиш.",
+
   "text.config.firewall-config.category.packetIdentifiers": "Идентификаторы пакетов",
   "text.config.firewall-config.category.packetIdentifiers.tooltip": "Допускаемые идентификаторы пакетов - см. https://minecraft.wiki/w/Java_Edition_protocol/Packets",
   "text.config.firewall-config.option.packetIdentifiers.comm": "Все",
@@ -91,15 +94,32 @@
   "text.config.firewall-config.option.brandOverwriteValue": "Переписанное значение бренда",
   "text.config.firewall-config.option.brandOverwriteValue.tooltip": "'vanilla', 'fabric' - что угодно. Используется, только если включена предыдущая опция.",
 
-  "text.config.firewall-config.category.loggedPacketIdentifiers": "Идентификаторы логированных пакетов",
-  "text.config.firewall-config.category.loggedPacketIdentifiers.tooltip": "Какие пакеты должны быть логированы - вне зависимости от того, отторжены они или нет.",
-  "text.config.firewall-config.option.loggedPacketIdentifiers.comm": "Все",
-  "text.config.firewall-config.option.loggedPacketIdentifiers.send": "Отправляемые",
-  "text.config.firewall-config.option.loggedPacketIdentifiers.recv": "Получаемые",
+  "text.config.firewall-config.category.logging": "Логирование",
+  "text.config.firewall-config.option.logging.isEnabled": "Включено",
+  "text.config.firewall-config.option.logging.isEnabled.tooltip": "Включение/выключение логирования. Можно переключить через Назначение клавиш.",
 
-  "text.config.firewall-config.category.loggedCustomPayloadIdentifiers": "Идентификаторы логированных кастомных пакетов",
-  "text.config.firewall-config.category.loggedCustomPayloadIdentifiers.tooltip": "Какие кастомные пакеты должны быть логированы - вне зависимости от того, отторжены они или нет.",
-  "text.config.firewall-config.option.loggedCustomPayloadIdentifiers.comm": "Все",
-  "text.config.firewall-config.option.loggedCustomPayloadIdentifiers.send": "Отправляемые",
-  "text.config.firewall-config.option.loggedCustomPayloadIdentifiers.recv": "Получаемые"
+  "text.config.firewall-config.category.logging.loggedPacketIdentifiers": "Идентификаторы логированных пакетов",
+  "text.config.firewall-config.category.logging.loggedPacketIdentifiers.tooltip": "Какие пакеты должны быть логированы - вне зависимости от того, отторжены они или нет.",
+  "text.config.firewall-config.option.logging.loggedPacketIdentifiers.comm": "Все",
+  "text.config.firewall-config.option.logging.loggedPacketIdentifiers.send": "Отправляемые",
+  "text.config.firewall-config.option.logging.loggedPacketIdentifiers.recv": "Получаемые",
+
+  "text.config.firewall-config.category.logging.loggedCustomPayloadIdentifiers": "Идентификаторы логированных кастомных пакетов",
+  "text.config.firewall-config.category.logging.loggedCustomPayloadIdentifiers.tooltip": "Какие кастомные пакеты должны быть логированы - вне зависимости от того, отторжены они или нет.",
+  "text.config.firewall-config.option.logging.loggedCustomPayloadIdentifiers.comm": "Все",
+  "text.config.firewall-config.option.logging.loggedCustomPayloadIdentifiers.send": "Отправляемые",
+  "text.config.firewall-config.option.logging.loggedCustomPayloadIdentifiers.recv": "Получаемые",
+
+
+
+  "key.category.firewall.main": "Firewall",
+  "key.firewall.toggleEnabled": "Включить/выключить мод",
+  "key.firewall.toggleLoggingEnabled": "Включить/выключить логирование",
+
+
+
+  "firewall.status.enabled": "Включили Firewall",
+  "firewall.status.disabled": "Выключили Firewall",
+  "firewall.status.logging.enabled": "Включили логирование Firewall",
+  "firewall.status.logging.disabled": "Выключили логирование Firewall"
 }
