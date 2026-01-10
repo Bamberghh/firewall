@@ -1,3 +1,4 @@
-### Fixes
+### Changes
 
-- Handle sent packets a bit more correctly
+- Added the ability to toggle the entire mod or its logging through config and key binds (thx @Hr0m4nul for suggestion)
+
