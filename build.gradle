@@ -55,6 +55,7 @@ processResources {
 	var properties = [
 	        version: project.version,
 			minecraft_version: project.minecraft_version,
+			loader_version: project.loader_version,
 	]
 	inputs.properties properties
 	filesMatching("fabric.mod.json") {
