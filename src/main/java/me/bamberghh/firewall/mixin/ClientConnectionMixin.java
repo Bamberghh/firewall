@@ -41,11 +41,7 @@ public abstract class ClientConnectionMixin {
     @Unique private static final String LOG_PREFIX_CLIENT_SEND = LOG_PREFIX_MOD + "client-> (send): ";
     @Unique private static final String LOG_PREFIX_CLIENT_RECV = LOG_PREFIX_MOD + "->client (recv): ";
 
-    @Shadow public abstract void flush();
-
     @Shadow public abstract NetworkSide getSide();
-
-    @Shadow protected abstract void channelRead0(ChannelHandlerContext channelHandlerContext, Packet<?> packet);
 
     @Shadow public abstract void send(Packet<?> packet);
 
@@ -59,6 +55,8 @@ public abstract class ClientConnectionMixin {
             boolean flush,
             CallbackInfo ci)
     {
+        if (!Firewall.CONFIG.isEnabled()) return;
+
         String logPrefix =
                 send
                 ? getSide() == NetworkSide.SERVERBOUND
@@ -75,7 +73,7 @@ public abstract class ClientConnectionMixin {
 
         String packetId = packet.getPacketType().id().toString();
 
-        if (config.loggedPacketIdentifiers().accepts(packetId)) {
+        if (Firewall.CONFIG.logging.isEnabled() && config.loggedPacketIdentifiers().accepts(packetId)) {
             Firewall.LOGGER.info("{}packet {}: {}", logPrefix, packetId, packet);
         }
 
@@ -87,7 +85,7 @@ public abstract class ClientConnectionMixin {
             case CustomPayloadS2CPacket(CustomPayload customPayload) -> payload = customPayload;
             case LoginQueryRequestS2CPacket(int queryId, LoginQueryRequestPayload queryRequestPayload) -> {
                 customPayloadId = queryRequestPayload.id().toString();
-                if (config.loggedCustomPayloadIdentifiers().accepts(customPayloadId)) {
+                if (Firewall.CONFIG.logging.isEnabled() && config.loggedCustomPayloadIdentifiers().accepts(customPayloadId)) {
                     Firewall.LOGGER.info("{}custom query request {}", logPrefix, customPayloadId);
                 }
                 queryRequestId = queryId;
@@ -97,13 +95,15 @@ public abstract class ClientConnectionMixin {
         };
         if (payload != null) {
             customPayloadId = payload.getId().id().toString();
-            if (config.loggedCustomPayloadIdentifiers().accepts(customPayloadId)) {
+            if (Firewall.CONFIG.logging.isEnabled() && config.loggedCustomPayloadIdentifiers().accepts(customPayloadId)) {
                 Firewall.LOGGER.info("{}custom payload {}: {}", logPrefix, customPayloadId, payload);
             }
         }
 
         if (!config.packetIdentifiers().accepts(packetId)) {
-            Firewall.LOGGER.info("{}rejected packet {}", logPrefix, packetId);
+            if (Firewall.CONFIG.logging.isEnabled()) {
+                Firewall.LOGGER.info("{}rejected packet {}", logPrefix, packetId);
+            }
             if (send) onSendCancel(channelFutureListener, flush);
             else onRecvCancel(queryRequestId);
             ci.cancel();
@@ -113,7 +113,9 @@ public abstract class ClientConnectionMixin {
             return;
         }
         if (!config.customPayloadIdentifiers().accepts(customPayloadId)) {
-            Firewall.LOGGER.info("{}rejected custom payload packet {}", logPrefix, customPayloadId);
+            if (Firewall.CONFIG.logging.isEnabled()) {
+                Firewall.LOGGER.info("{}rejected custom payload packet {}", logPrefix, customPayloadId);
+            }
             if (send) onSendCancel(channelFutureListener, flush);
             else onRecvCancel(queryRequestId);
             ci.cancel();
@@ -142,11 +144,13 @@ public abstract class ClientConnectionMixin {
                             : !Firewall.CONFIG.registerIdentifiers.sendEmptyChannelLists());
             if (!rejectedChannels.isEmpty()) {
                 registerCommon.firewall$setChannelsCollection(acceptedChannels);
-                Firewall.LOGGER.info("{}filtered{} {} packet channels: rejected: {} ({}); accepted: {} ({})", logPrefix,
-                        cancel ? " & rejected" : "",
-                        payload.getId().id(),
-                        rejectedChannels, rejectedChannels.size(),
-                        acceptedChannels, acceptedChannels.size());
+                if (Firewall.CONFIG.logging.isEnabled()) {
+                    Firewall.LOGGER.info("{}filtered{} {} packet channels: rejected: {} ({}); accepted: {} ({})", logPrefix,
+                            cancel ? " & rejected" : "",
+                            payload.getId().id(),
+                            rejectedChannels, rejectedChannels.size(),
+                            acceptedChannels, acceptedChannels.size());
+                }
             }
             if (cancel) {
                 if (send) onSendCancel(channelFutureListener, flush);
@@ -192,27 +196,6 @@ public abstract class ClientConnectionMixin {
                 .stream()
                 .collect(Collectors.partitioningBy(filter::accepts));
         return Pair.of(partitionedChannels.get(false), partitionedChannels.get(true));
-    }
-
-    @Unique
-    private static boolean modifyRegistrationPayload(String logPrefix, boolean send, StringFilter filter, RegisterPayloadCommonInterface payload) {
-        var partitionedChannels = partitionChannels(payload.firewall$channelsCollection(), filter);
-        var rejectedChannels = partitionedChannels.getLeft();
-        var acceptedChannels = partitionedChannels.getRight();
-        boolean cancel =
-                acceptedChannels.isEmpty()
-                        && (!send
-                        ? !Firewall.CONFIG.registerIdentifiers.recvEmptyChannelLists()
-                        : !Firewall.CONFIG.registerIdentifiers.sendEmptyChannelLists());
-        if (!rejectedChannels.isEmpty()) {
-            payload.firewall$setChannelsCollection(acceptedChannels);
-            Firewall.LOGGER.info("{}filtered{} {} packet channels: rejected: {} ({}); accepted: {} ({})", logPrefix,
-                    cancel ? " & rejected" : "",
-                    payload.getId().id(),
-                    rejectedChannels, rejectedChannels.size(),
-                    acceptedChannels, acceptedChannels.size());
-        }
-        return cancel;
     }
 
     @Inject(method = "sendInternal", at = @At("HEAD"), cancellable = true)
