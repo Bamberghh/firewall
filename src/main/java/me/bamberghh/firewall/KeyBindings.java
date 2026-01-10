@@ -3,16 +3,15 @@ package me.bamberghh.firewall;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 public class KeyBindings {
-    public KeyBinding.Category category;
+    public String category;
     public KeyBinding toggleEnabled;
     public KeyBinding toggleLoggingEnabled;
 
     public KeyBindings() {
-        this.category = KeyBinding.Category.create(Identifier.of(Firewall.MOD_ID, "main"));
+        this.category = "%s.main".formatted(Firewall.MOD_ID);
         this.toggleEnabled = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.firewall.toggleEnabled",
                 GLFW.GLFW_KEY_UNKNOWN,
