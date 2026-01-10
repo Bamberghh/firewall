@@ -17,6 +17,7 @@ public class BrandCustomPayloadMixin {
 
     @Inject(at = @At("RETURN"), method = "<init>(Ljava/lang/String;)V")
     private void init(String string, CallbackInfo ci) {
+        if (!Firewall.CONFIG.isEnabled()) return;
         if (Firewall.CONFIG.shouldOverwriteBrand()) {
             this.brand = Firewall.CONFIG.brandOverwriteValue();
         }
