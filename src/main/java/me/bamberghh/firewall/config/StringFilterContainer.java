@@ -4,9 +4,9 @@ import io.wispforest.owo.config.Option;
 import io.wispforest.owo.config.annotation.Expanded;
 import io.wispforest.owo.config.ui.component.OptionValueProvider;
 import io.wispforest.owo.ui.component.ButtonComponent;
-import io.wispforest.owo.ui.component.Components;
 import io.wispforest.owo.ui.component.LabelComponent;
 import io.wispforest.owo.ui.component.TextBoxComponent;
+import io.wispforest.owo.ui.component.UIComponents;
 import io.wispforest.owo.ui.container.CollapsibleContainer;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Sizing;
@@ -36,7 +36,7 @@ public class StringFilterContainer extends CollapsibleContainer implements Optio
         protected boolean wasRightClicked = false;
 
         public KindButton() {
-            super(Text.empty(), button -> {});
+            super(net.minecraft.text.Text.empty(), button -> {});
             this.verticalSizing(Sizing.fixed(20));
             this.horizontalSizing(Sizing.expand());
             this.updateMessage();
@@ -75,7 +75,7 @@ public class StringFilterContainer extends CollapsibleContainer implements Optio
             assert backingValue != null;
             var valueName = backingValue.name().toLowerCase(Locale.ROOT);
 
-            this.setMessage(Text.translatable("text.config." + this.backingOption.configName() + ".stringfilter.kind." + valueName));
+            this.setMessage(net.minecraft.text.Text.translatable("text.config." + this.backingOption.configName() + ".stringfilter.kind." + valueName));
         }
 
         public KindButton init(Option<SimpleStringFilter> option, int selectedIndex) {
@@ -167,7 +167,7 @@ public class StringFilterContainer extends CollapsibleContainer implements Optio
                 .<LabelComponent>configure(
                         label -> label.text(Text.translatable(String.format("text.config.%s.stringfilter.list", Firewall.CONFIG.name()))));
 
-        regexTextBoxComponent = Components.textBox(Sizing.expand());
+        regexTextBoxComponent = UIComponents.textBox(Sizing.expand());
         regexTextBoxComponent.setMaxLength(Integer.MAX_VALUE);
         regexTextBoxComponent.text(filter.regex.pattern());
 

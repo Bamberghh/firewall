@@ -7,11 +7,11 @@ import io.wispforest.owo.config.ui.component.OptionValueProvider;
 import io.wispforest.owo.config.ui.component.SearchAnchorComponent;
 import io.wispforest.owo.ops.TextOps;
 import io.wispforest.owo.ui.component.ButtonComponent;
-import io.wispforest.owo.ui.component.Components;
 import io.wispforest.owo.ui.component.LabelComponent;
+import io.wispforest.owo.ui.component.UIComponents;
 import io.wispforest.owo.ui.container.CollapsibleContainer;
-import io.wispforest.owo.ui.container.Containers;
 import io.wispforest.owo.ui.container.FlowLayout;
+import io.wispforest.owo.ui.container.UIContainers;
 import io.wispforest.owo.ui.core.*;
 import io.wispforest.owo.ui.util.UISounds;
 import io.wispforest.owo.util.NumberReflection;
@@ -55,7 +55,7 @@ public class SetOptionContainer<T> extends CollapsibleContainer implements Optio
         this.titleLayout.verticalAlignment(VerticalAlignment.CENTER);
 
         if (!option.detached()) {
-            this.titleLayout.child(Components.label(Text.translatable("text.owo.config.list.add_entry").formatted(Formatting.GRAY)).<LabelComponent>configure(label -> {
+            this.titleLayout.child(UIComponents.label(Text.translatable("text.owo.config.list.add_entry").formatted(Formatting.GRAY)).<LabelComponent>configure(label -> {
                 label.cursorStyle(CursorStyle.HAND);
 
                 label.mouseEnter().subscribe(() -> label.text(label.text().copy().styled(style -> style.withColor(Formatting.YELLOW))));
@@ -68,7 +68,7 @@ public class SetOptionContainer<T> extends CollapsibleContainer implements Optio
                     if (!this.expanded) this.toggleExpansion();
                     this.refreshOptions();
 
-                    var lastEntry = (ParentComponent) this.collapsibleChildren.getLast();
+                    var lastEntry = (ParentUIComponent) this.collapsibleChildren.getLast();
                     assert this.focusHandler() != null;
                     this.focusHandler().focus(
                             lastEntry.children().getLast(),
@@ -80,7 +80,7 @@ public class SetOptionContainer<T> extends CollapsibleContainer implements Optio
             }));
         }
 
-        this.resetButton = Components.button(Text.literal("⇄"), (ButtonComponent button) -> {
+        this.resetButton = UIComponents.button(Text.literal("⇄"), (ButtonComponent button) -> {
             this.backingList.clear();
             this.backingList.addAll(option.defaultValue());
             backingSetMarkDirty();
@@ -125,10 +125,10 @@ public class SetOptionContainer<T> extends CollapsibleContainer implements Optio
         for (int currentIndex = 0; currentIndex < this.backingList.size(); currentIndex++) {
             int optionIndex = currentIndex;
 
-            var container = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
+            var container = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
             container.verticalAlignment(VerticalAlignment.CENTER);
 
-            final var label = Components.label(TextOps.withFormatting("- ", Formatting.GRAY));
+            final var label = UIComponents.label(TextOps.withFormatting("- ", Formatting.GRAY));
             label.margins(Insets.left(10));
             if (!this.backingOption.detached()) {
                 label.cursorStyle(CursorStyle.HAND);
