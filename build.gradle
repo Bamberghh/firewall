@@ -17,10 +17,26 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 
-	maven { url = 'https://maven.wispforest.io/releases/' }
+	maven {
+		name = "WispForest"
+		url = 'https://maven.wispforest.io/releases/'
+		content {
+			includeGroupByRegex "io\\.wispforest.*"
+		}
+	}
+	maven {
+		name = "JitPack"
+		url = 'https://jitpack.io'
+		content {
+			includeGroup "com.github.kdl-org"
+		}
+	}
 	maven {
 		name = "Terraformers"
 		url = "https://maven.terraformersmc.com/"
+		content {
+			includeGroup "com.terraformersmc"
+		}
 	}
 	exclusiveContent {
 		forRepository {
