@@ -9,16 +9,16 @@ import me.bamberghh.firewall.util.RegisterPayloadCommonInterface;
 import me.bamberghh.firewall.util.StringFilter;
 import net.fabricmc.fabric.impl.networking.CommonRegisterPayload;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.NetworkSide;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
-import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
-import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
-import net.minecraft.network.packet.s2c.login.LoginQueryRequestPayload;
-import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.login.ClientboundCustomQueryPacket;
+import net.minecraft.network.protocol.login.ServerboundCustomQueryAnswerPacket;
+import net.minecraft.network.protocol.login.custom.CustomQueryPayload;
+import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,22 +33,22 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("UnstableApiUsage") // Fabric's RegistrationPayload's package is unstable
-@Mixin(ClientConnection.class)
-public abstract class ClientConnectionMixin {
+@Mixin(Connection.class)
+public abstract class ConnectionMixin {
     @Unique private static final String LOG_PREFIX_MOD = Firewall.MOD_ID + ": ";
     @Unique private static final String LOG_PREFIX_SERVER_SEND = LOG_PREFIX_MOD + "server-> (send): ";
     @Unique private static final String LOG_PREFIX_SERVER_RECV = LOG_PREFIX_MOD + "->server (recv): ";
     @Unique private static final String LOG_PREFIX_CLIENT_SEND = LOG_PREFIX_MOD + "client-> (send): ";
     @Unique private static final String LOG_PREFIX_CLIENT_RECV = LOG_PREFIX_MOD + "->client (recv): ";
 
-    @Shadow public abstract NetworkSide getSide();
+    @Shadow public abstract PacketFlow getReceiving();
 
     @Shadow public abstract void send(Packet<?> packet);
 
     @Shadow private Channel channel;
 
     @Unique
-    private void handlePacket(
+    private void firewall$handlePacket(
             boolean send,
             Packet<?> packet,
             @Nullable ChannelFutureListener channelFutureListener,
@@ -59,10 +59,10 @@ public abstract class ClientConnectionMixin {
 
         String logPrefix =
                 send
-                ? getSide() == NetworkSide.SERVERBOUND
+                ? getReceiving() == PacketFlow.SERVERBOUND
                         ? LOG_PREFIX_SERVER_SEND
                         : LOG_PREFIX_CLIENT_SEND
-                : getSide() == NetworkSide.SERVERBOUND
+                : getReceiving() == PacketFlow.SERVERBOUND
                         ? LOG_PREFIX_SERVER_RECV
                         : LOG_PREFIX_CLIENT_RECV;
 
@@ -71,7 +71,7 @@ public abstract class ClientConnectionMixin {
                 ? Firewall.CONFIG.sendMerged()
                 : Firewall.CONFIG.recvMerged();
 
-        String packetId = packet.getPacketType().id().toString();
+        String packetId = packet.type().id().toString();
 
         if (Firewall.CONFIG.logging.isEnabled() && config.loggedPacketIdentifiers().accepts(packetId)) {
             Firewall.LOGGER.info("{}packet {}: {}", logPrefix, packetId, packet);
@@ -79,22 +79,22 @@ public abstract class ClientConnectionMixin {
 
         Integer queryRequestId = null;
         String customPayloadId = null;
-        CustomPayload payload = null;
+        CustomPacketPayload payload = null;
         switch (packet) {
-            case CustomPayloadC2SPacket(CustomPayload customPayload) -> payload = customPayload;
-            case CustomPayloadS2CPacket(CustomPayload customPayload) -> payload = customPayload;
-            case LoginQueryRequestS2CPacket(int queryId, LoginQueryRequestPayload queryRequestPayload) -> {
+            case ServerboundCustomPayloadPacket(CustomPacketPayload customPayload) -> payload = customPayload;
+            case ClientboundCustomPayloadPacket(CustomPacketPayload customPayload) -> payload = customPayload;
+            case ClientboundCustomQueryPacket(int queryId, CustomQueryPayload queryRequestPayload) -> {
                 customPayloadId = queryRequestPayload.id().toString();
                 if (Firewall.CONFIG.logging.isEnabled() && config.loggedCustomPayloadIdentifiers().accepts(customPayloadId)) {
                     Firewall.LOGGER.info("{}custom query request {}", logPrefix, customPayloadId);
                 }
                 queryRequestId = queryId;
             }
-            // LoginQueryResponseC2SPacket shouldn't be filtered since the response is needed during login.
+            // ServerboundCustomQueryAnswerPacket shouldn't be filtered since the response is needed during login.
             default -> {}
         };
         if (payload != null) {
-            customPayloadId = payload.getId().id().toString();
+            customPayloadId = payload.type().id().toString();
             if (Firewall.CONFIG.logging.isEnabled() && config.loggedCustomPayloadIdentifiers().accepts(customPayloadId)) {
                 Firewall.LOGGER.info("{}custom payload {}: {}", logPrefix, customPayloadId, payload);
             }
@@ -104,8 +104,8 @@ public abstract class ClientConnectionMixin {
             if (Firewall.CONFIG.logging.isEnabled()) {
                 Firewall.LOGGER.info("{}rejected packet {}", logPrefix, packetId);
             }
-            if (send) onSendCancel(channelFutureListener, flush);
-            else onRecvCancel(queryRequestId);
+            if (send) firewall$onSendCancel(channelFutureListener, flush);
+            else firewall$onRecvCancel(queryRequestId);
             ci.cancel();
             return;
         }
@@ -116,8 +116,8 @@ public abstract class ClientConnectionMixin {
             if (Firewall.CONFIG.logging.isEnabled()) {
                 Firewall.LOGGER.info("{}rejected custom payload packet {}", logPrefix, customPayloadId);
             }
-            if (send) onSendCancel(channelFutureListener, flush);
-            else onRecvCancel(queryRequestId);
+            if (send) firewall$onSendCancel(channelFutureListener, flush);
+            else firewall$onRecvCancel(queryRequestId);
             ci.cancel();
             return;
         }
@@ -134,7 +134,7 @@ public abstract class ClientConnectionMixin {
         // For some reason IntelliJ says that registerCommon is always null, but that's a false positive.
         //noinspection ConstantValue
         if (registerCommon != null) {
-            var partitionedChannels = partitionChannels(registerCommon.firewall$channelsCollection(), config.registerIdentifiers());
+            var partitionedChannels = firewall$partitionChannels(registerCommon.firewall$channelsCollection(), config.registerIdentifiers());
             var rejectedChannels = partitionedChannels.getLeft();
             var acceptedChannels = partitionedChannels.getRight();
             boolean cancel =
@@ -147,21 +147,21 @@ public abstract class ClientConnectionMixin {
                 if (Firewall.CONFIG.logging.isEnabled()) {
                     Firewall.LOGGER.info("{}filtered{} {} packet channels: rejected: {} ({}); accepted: {} ({})", logPrefix,
                             cancel ? " & rejected" : "",
-                            payload.getId().id(),
+                            payload.type().id(),
                             rejectedChannels, rejectedChannels.size(),
                             acceptedChannels, acceptedChannels.size());
                 }
             }
             if (cancel) {
-                if (send) onSendCancel(channelFutureListener, flush);
-                else onRecvCancel(queryRequestId);
+                if (send) firewall$onSendCancel(channelFutureListener, flush);
+                else firewall$onRecvCancel(queryRequestId);
                 ci.cancel();
             }
         }
     }
 
     @Unique
-    private void onSendCancel(@Nullable ChannelFutureListener channelFutureListener, boolean flush) {
+    private void firewall$onSendCancel(@Nullable ChannelFutureListener channelFutureListener, boolean flush) {
         // Mimic the normal sending behavior when rejecting a packet (cancelling CallbackInfo)
         if (channelFutureListener != null) {
             channel.newSucceededFuture().addListener(channelFutureListener);
@@ -172,7 +172,7 @@ public abstract class ClientConnectionMixin {
     }
 
     @Unique
-    private void onRecvCancel(@Nullable Integer queryRequestId) {
+    private void firewall$onRecvCancel(@Nullable Integer queryRequestId) {
         if (queryRequestId == null) {
             return;
         }
@@ -181,11 +181,11 @@ public abstract class ClientConnectionMixin {
         }
         // Send the vanilla response to the request because as I understand it,
         // the query request of the configuration phase requires a response otherwise it breaks.
-        send(new LoginQueryResponseC2SPacket(queryRequestId, null));
+        send(new ServerboundCustomQueryAnswerPacket(queryRequestId, null));
     }
 
     @Unique
-    private static Pair<Collection<Identifier>, Collection<Identifier>> partitionChannels(Collection<Identifier> channels, StringFilter filter) {
+    private static Pair<Collection<Identifier>, Collection<Identifier>> firewall$partitionChannels(Collection<Identifier> channels, StringFilter filter) {
         if (filter.acceptsNothing()) {
             return Pair.of(channels, Collections.emptyList());
         }
@@ -198,13 +198,13 @@ public abstract class ClientConnectionMixin {
         return Pair.of(partitionedChannels.get(false), partitionedChannels.get(true));
     }
 
-    @Inject(method = "sendInternal", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "doSendPacket", at = @At("HEAD"), cancellable = true)
     private void sendInternal(Packet<?> packet, @Nullable ChannelFutureListener channelFutureListener, boolean flush, CallbackInfo ci) {
-        handlePacket(true, packet, channelFutureListener, flush, ci);
+        firewall$handlePacket(true, packet, channelFutureListener, flush, ci);
     }
 
-    @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;)V", at = @At("HEAD"), cancellable = true)
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet<?> packet, CallbackInfo ci) {
-        handlePacket(false, packet, null, false, ci);
+        firewall$handlePacket(false, packet, null, false, ci);
     }
 }

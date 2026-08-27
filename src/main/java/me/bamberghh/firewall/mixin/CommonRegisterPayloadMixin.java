@@ -2,13 +2,15 @@ package me.bamberghh.firewall.mixin;
 
 import me.bamberghh.firewall.util.RegisterPayloadCommonInterface;
 import net.fabricmc.fabric.impl.networking.CommonRegisterPayload;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @SuppressWarnings("UnstableApiUsage")
 @Mixin(value = CommonRegisterPayload.class, remap = false)

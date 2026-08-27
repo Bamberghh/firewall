@@ -1,33 +1,33 @@
 package me.bamberghh.firewall;
 
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.util.Identifier;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 public class KeyBindings {
-    public KeyBinding.Category category;
-    public KeyBinding toggleEnabled;
-    public KeyBinding toggleLoggingEnabled;
+    public KeyMapping.Category category;
+    public KeyMapping toggleEnabled;
+    public KeyMapping toggleLoggingEnabled;
 
     public KeyBindings() {
-        this.category = KeyBinding.Category.create(Identifier.of(Firewall.MOD_ID, "main"));
-        this.toggleEnabled = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+        this.category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(Firewall.MOD_ID, "main"));
+        this.toggleEnabled = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.firewall.toggleEnabled",
                 GLFW.GLFW_KEY_UNKNOWN,
                 this.category));
-        this.toggleLoggingEnabled = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+        this.toggleLoggingEnabled = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.firewall.toggleLoggingEnabled",
                 GLFW.GLFW_KEY_UNKNOWN,
                 this.category));
     }
 
-    public void handle(MinecraftClient client) {
-        while (this.toggleEnabled.wasPressed()) {
+    public void handle(Minecraft client) {
+        while (this.toggleEnabled.consumeClick()) {
             Firewall.setEnabled(client, !Firewall.CONFIG.isEnabled());
         }
-        while (this.toggleLoggingEnabled.wasPressed()) {
+        while (this.toggleLoggingEnabled.consumeClick()) {
             Firewall.setLoggingEnabled(client, !Firewall.CONFIG.logging.isEnabled());
         }
     }

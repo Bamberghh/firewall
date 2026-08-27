@@ -17,10 +17,10 @@ import io.wispforest.owo.ui.util.UISounds;
 import io.wispforest.owo.util.NumberReflection;
 import io.wispforest.owo.util.ReflectionUtils;
 import me.bamberghh.firewall.util.IndexHashSet;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -35,13 +35,13 @@ public class SetOptionContainer<T> extends CollapsibleContainer implements Optio
     protected boolean backingSetDirty = true;
     protected final IndexHashSet<T> backingSet = new IndexHashSet<>();
 
-    protected final ButtonWidget resetButton;
+    protected final Button resetButton;
 
     @SuppressWarnings("unchecked")
     public SetOptionContainer(Option<Set<T>> option) {
         super(
                 Sizing.fill(100), Sizing.content(),
-                Text.translatable("text.config." + option.configName() + ".option." + option.key().asString()),
+                Component.translatable("text.config." + option.configName() + ".option." + option.key().asString()),
                 option.backingField().field().isAnnotationPresent(Expanded.class)
         );
 
@@ -55,11 +55,11 @@ public class SetOptionContainer<T> extends CollapsibleContainer implements Optio
         this.titleLayout.verticalAlignment(VerticalAlignment.CENTER);
 
         if (!option.detached()) {
-            this.titleLayout.child(UIComponents.label(Text.translatable("text.owo.config.list.add_entry").formatted(Formatting.GRAY)).<LabelComponent>configure(label -> {
+            this.titleLayout.child(UIComponents.label(Component.translatable("text.owo.config.list.add_entry").withStyle(ChatFormatting.GRAY)).<LabelComponent>configure(label -> {
                 label.cursorStyle(CursorStyle.HAND);
 
-                label.mouseEnter().subscribe(() -> label.text(label.text().copy().styled(style -> style.withColor(Formatting.YELLOW))));
-                label.mouseLeave().subscribe(() -> label.text(label.text().copy().styled(style -> style.withColor(Formatting.GRAY))));
+                label.mouseEnter().subscribe(() -> label.text(label.text().copy().withStyle(style -> style.withColor(ChatFormatting.YELLOW))));
+                label.mouseLeave().subscribe(() -> label.text(label.text().copy().withStyle(style -> style.withColor(ChatFormatting.GRAY))));
                 label.mouseDown().subscribe((click, doubled) -> {
                     UISounds.playInteractionSound();
                     this.backingList.add((T) "");
@@ -80,7 +80,7 @@ public class SetOptionContainer<T> extends CollapsibleContainer implements Optio
             }));
         }
 
-        this.resetButton = UIComponents.button(Text.literal("⇄"), (ButtonComponent button) -> {
+        this.resetButton = UIComponents.button(Component.literal("⇄"), (ButtonComponent button) -> {
             this.backingList.clear();
             this.backingList.addAll(option.defaultValue());
             backingSetMarkDirty();
@@ -98,7 +98,7 @@ public class SetOptionContainer<T> extends CollapsibleContainer implements Optio
         this.titleLayout.child(new SearchAnchorComponent(
                 this.titleLayout,
                 option.key(),
-                () -> I18n.translate("text.config." + option.configName() + ".option." + option.key().asString()),
+                () -> I18n.get("text.config." + option.configName() + ".option." + option.key().asString()),
                 () -> this.backingList.stream().map(Objects::toString).collect(Collectors.joining())
         ));
     }
@@ -128,12 +128,12 @@ public class SetOptionContainer<T> extends CollapsibleContainer implements Optio
             var container = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
             container.verticalAlignment(VerticalAlignment.CENTER);
 
-            final var label = UIComponents.label(TextOps.withFormatting("- ", Formatting.GRAY));
+            final var label = UIComponents.label(TextOps.withFormatting("- ", ChatFormatting.GRAY));
             label.margins(Insets.left(10));
             if (!this.backingOption.detached()) {
                 label.cursorStyle(CursorStyle.HAND);
-                label.mouseEnter().subscribe(() -> label.text(TextOps.withFormatting("x ", Formatting.GRAY)));
-                label.mouseLeave().subscribe(() -> label.text(TextOps.withFormatting("- ", Formatting.GRAY)));
+                label.mouseEnter().subscribe(() -> label.text(TextOps.withFormatting("x ", ChatFormatting.GRAY)));
+                label.mouseLeave().subscribe(() -> label.text(TextOps.withFormatting("- ", ChatFormatting.GRAY)));
                 label.mouseDown().subscribe((click, doubled) -> {
                     this.backingList.remove(optionIndex);
                     backingSetMarkDirty();
@@ -147,9 +147,9 @@ public class SetOptionContainer<T> extends CollapsibleContainer implements Optio
             container.child(label);
 
             final var box = new ConfigTextBox();
-            box.setText(this.backingList.get(optionIndex).toString());
-            box.setCursorToStart(false);
-            box.setDrawsBackground(false);
+            box.setValue(this.backingList.get(optionIndex).toString());
+            box.moveCursorToStart(false);
+            box.setBordered(false);
             box.margins(Insets.vertical(2));
             box.horizontalSizing(Sizing.fill(95));
             box.verticalSizing(Sizing.fixed(8));

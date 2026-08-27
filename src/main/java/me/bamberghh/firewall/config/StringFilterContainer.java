@@ -14,10 +14,10 @@ import io.wispforest.owo.util.Observable;
 import me.bamberghh.firewall.Firewall;
 import me.bamberghh.firewall.util.IndexHashSet;
 import me.bamberghh.firewall.util.SimpleStringFilter;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.input.AbstractInput;
-import net.minecraft.client.input.MouseInput;
-import net.minecraft.text.Text;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -36,21 +36,21 @@ public class StringFilterContainer extends CollapsibleContainer implements Optio
         protected boolean wasRightClicked = false;
 
         public KindButton() {
-            super(net.minecraft.text.Text.empty(), button -> {});
+            super(net.minecraft.network.chat.Component.empty(), button -> {});
             this.verticalSizing(Sizing.fixed(20));
             this.horizontalSizing(Sizing.expand());
             this.updateMessage();
         }
 
         @Override
-        public boolean onMouseDown(Click click, boolean doubled) {
+        public boolean onMouseDown(MouseButtonEvent click, boolean doubled) {
             this.wasRightClicked = click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
             return super.onMouseDown(click, doubled);
         }
 
         @Override
-        public void onPress(AbstractInput input) {
-            if (this.wasRightClicked || input.hasShift()) {
+        public void onPress(InputWithModifiers input) {
+            if (this.wasRightClicked || input.hasShiftDown()) {
                 this.selectedIndex--;
                 if (this.selectedIndex < 0) this.selectedIndex += this.backingValues.length;
             } else {
@@ -64,7 +64,7 @@ public class StringFilterContainer extends CollapsibleContainer implements Optio
         }
 
         @Override
-        protected boolean isValidClickButton(MouseInput input) {
+        protected boolean isValidClickButton(MouseButtonInfo input) {
             return input.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT || super.isValidClickButton(input);
         }
 
@@ -75,7 +75,7 @@ public class StringFilterContainer extends CollapsibleContainer implements Optio
             assert backingValue != null;
             var valueName = backingValue.name().toLowerCase(Locale.ROOT);
 
-            this.setMessage(net.minecraft.text.Text.translatable("text.config." + this.backingOption.configName() + ".stringfilter.kind." + valueName));
+            this.setMessage(net.minecraft.network.chat.Component.translatable("text.config." + this.backingOption.configName() + ".stringfilter.kind." + valueName));
         }
 
         public KindButton init(Option<SimpleStringFilter> option, int selectedIndex) {
@@ -117,7 +117,7 @@ public class StringFilterContainer extends CollapsibleContainer implements Optio
     public StringFilterContainer(Option<SimpleStringFilter> option) {
         super(
                 Sizing.fill(100), Sizing.content(),
-                Text.translatable("text.config." + option.configName() + ".option." + option.key().asString()),
+                Component.translatable("text.config." + option.configName() + ".option." + option.key().asString()),
                 option.backingField().field().isAnnotationPresent(Expanded.class)
         );
 
@@ -165,7 +165,7 @@ public class StringFilterContainer extends CollapsibleContainer implements Optio
                 .children()
                 .getFirst()
                 .<LabelComponent>configure(
-                        label -> label.text(Text.translatable(String.format("text.config.%s.stringfilter.list", Firewall.CONFIG.name()))));
+                        label -> label.text(Component.translatable(String.format("text.config.%s.stringfilter.list", Firewall.CONFIG.name()))));
 
         regexTextBoxComponent = UIComponents.textBox(Sizing.expand());
         regexTextBoxComponent.setMaxLength(Integer.MAX_VALUE);
@@ -191,9 +191,9 @@ public class StringFilterContainer extends CollapsibleContainer implements Optio
     @Override
     public boolean isValid() {
         try {
-            Pattern.compile(regexTextBoxComponent.getText());
+            Pattern.compile(regexTextBoxComponent.getValue());
         } catch (PatternSyntaxException e) {
-            Firewall.LOGGER.info("firewall: bad regex {}: {}", regexTextBoxComponent.getText(), e);
+            Firewall.LOGGER.info("firewall: bad regex {}: {}", regexTextBoxComponent.getValue(), e);
             return false;
         }
         return true;
@@ -201,6 +201,6 @@ public class StringFilterContainer extends CollapsibleContainer implements Optio
 
     @Override
     public Object parsedValue() {
-        return new SimpleStringFilter(kindButton.value(), subValueContainer.value(), Pattern.compile(regexTextBoxComponent.getText()));
+        return new SimpleStringFilter(kindButton.value(), subValueContainer.value(), Pattern.compile(regexTextBoxComponent.getValue()));
     }
 }

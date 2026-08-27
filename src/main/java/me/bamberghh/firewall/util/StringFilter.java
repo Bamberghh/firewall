@@ -1,6 +1,6 @@
 package me.bamberghh.firewall.util;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 public interface StringFilter {
     boolean acceptsNothing();

@@ -4,8 +4,8 @@ import me.bamberghh.firewall.config.ConfigInit;
 import me.bamberghh.firewall.config.FirewallConfig;
 import me.bamberghh.firewall.config.FirewallConfigModel;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,21 +19,21 @@ public class Firewall implements ModInitializer {
 
     public static final FirewallConfig CONFIG = FirewallConfig.createAndLoad(FirewallConfigModel::builderConsumer);
 
-    public static void sendStatusMessage(@Nullable MinecraftClient client, Text message) {
+    public static void sendStatusMessage(@Nullable Minecraft client, Component message) {
         if (client == null) return;
         var player = client.player;
         if (player == null) return;
-        player.sendMessage(message, true);
+        player.sendSystemMessage(message);
     }
 
-    public static void setEnabled(@Nullable MinecraftClient client, boolean isEnabled) {
+    public static void setEnabled(@Nullable Minecraft client, boolean isEnabled) {
         CONFIG.isEnabled(isEnabled);
-        sendStatusMessage(client, Text.translatable(isEnabled ? "firewall.status.enabled" : "firewall.status.disabled"));
+        sendStatusMessage(client, Component.translatable(isEnabled ? "firewall.status.enabled" : "firewall.status.disabled"));
     }
 
-    public static void setLoggingEnabled(@Nullable MinecraftClient client, boolean isEnabled) {
+    public static void setLoggingEnabled(@Nullable Minecraft client, boolean isEnabled) {
         CONFIG.logging.isEnabled(isEnabled);
-        sendStatusMessage(client, Text.translatable(isEnabled ? "firewall.status.logging.enabled" : "firewall.status.logging.disabled"));
+        sendStatusMessage(client, Component.translatable(isEnabled ? "firewall.status.logging.enabled" : "firewall.status.logging.disabled"));
     }
 
     @Override

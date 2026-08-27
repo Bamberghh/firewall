@@ -9,9 +9,9 @@
     "requireAnnotations": true
   },
   "mixins": [
-    "BrandCustomPayloadMixin",
-    "ClientConnectionMixin",
-    "RegistrationPayloadMixin",
-    "CommonRegisterPayloadMixin"
+    "BrandPayloadMixin",
+    "CommonRegisterPayloadMixin",
+    "ConnectionMixin",
+    "RegistrationPayloadMixin"
   ]
 }

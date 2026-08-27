@@ -1,7 +1,7 @@
 package me.bamberghh.firewall.mixin;
 
 import me.bamberghh.firewall.Firewall;
-import net.minecraft.network.packet.BrandCustomPayload;
+import net.minecraft.network.protocol.common.custom.BrandPayload;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(BrandCustomPayload.class)
-public class BrandCustomPayloadMixin {
+@Mixin(BrandPayload.class)
+public class BrandPayloadMixin {
     @Mutable
     @Shadow @Final private String brand;
 
